@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Text;
+using Barber.Persistence.DataContexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Api.Configurations;
 
@@ -13,8 +15,14 @@ public static partial class HostConfiguration
         Assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Select(Assembly.Load).ToList();
         Assemblies.Add(Assembly.GetExecutingAssembly());
     }
-    
-    
+
+    private static WebApplicationBuilder AddPersistence(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+        return builder;
+    }
+
     /// <summary>
     /// Adds client-related infrastructure services to the web application builder.
     /// </summary>
@@ -27,7 +35,7 @@ public static partial class HostConfiguration
 
         return builder;
     }
-    
+
     /// <summary>
     ///  Configures exposers including controllers and routing.
     /// </summary>
@@ -36,17 +44,14 @@ public static partial class HostConfiguration
     private static WebApplicationBuilder AddExposers(this WebApplicationBuilder builder)
     {
         builder.Services.Configure<ApiBehaviorOptions>(
-            options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            }
+            options => { options.SuppressModelStateInvalidFilter = true; }
         );
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
         builder.Services.AddControllers();
-        
+
         return builder;
     }
-    
+
 
     /// <summary>
     /// Enables CORS middleware in the web application pipeline.
@@ -72,7 +77,7 @@ public static partial class HostConfiguration
 
         return app;
     }
-    
+
     /// <summary>
     /// Add Controller middleWhere
     /// </summary>
