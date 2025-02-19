@@ -1,8 +1,14 @@
 using System.Reflection;
 using System.Text;
+using Barber.Application.Users.Services;
+using Barber.Infrastructure.Users.Services;
 using Barber.Persistence.DataContexts;
+using Barber.Persistence.Repositories;
+using Barber.Persistence.Repositories.Interface;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Xunarmand.Application.Common.Settings;
 
 namespace Barber.Api.Configurations;
 
@@ -15,11 +21,38 @@ public static partial class HostConfiguration
         Assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Select(Assembly.Load).ToList();
         Assemblies.Add(Assembly.GetExecutingAssembly());
     }
+    private static WebApplicationBuilder AddValidators(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<ValidationSettings>(builder.Configuration.GetSection(nameof(ValidationSettings)));
 
+        builder.Services.AddValidatorsFromAssemblies(Assemblies);        
+        return builder;
+    }
+    
+    private static WebApplicationBuilder AddMappers(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddAutoMapper(Assemblies);
+        return builder;
+    }
+    
     private static WebApplicationBuilder AddPersistence(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddIdentityInfrastructure(this WebApplicationBuilder builder)
+    {
+        // user
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        return builder;
+    }
+    private static WebApplicationBuilder AddMediator(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddMediatR(conf => {conf.RegisterServicesFromAssemblies(Assemblies.ToArray());});
+        
         return builder;
     }
 
@@ -35,7 +68,7 @@ public static partial class HostConfiguration
 
         return builder;
     }
-
+    
     /// <summary>
     ///  Configures exposers including controllers and routing.
     /// </summary>
@@ -85,6 +118,9 @@ public static partial class HostConfiguration
     /// <returns>Application host</returns>
     private static WebApplication UseExposers(this WebApplication app)
     {
+        app.UseStaticFiles();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapControllers();
 
         return app;

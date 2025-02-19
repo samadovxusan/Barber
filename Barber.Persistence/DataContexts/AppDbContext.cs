@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Barber.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Persistence.DataContexts;
 
@@ -13,4 +14,5 @@ public class AppDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
+    public DbSet<User> Users { get; set; }
 }
