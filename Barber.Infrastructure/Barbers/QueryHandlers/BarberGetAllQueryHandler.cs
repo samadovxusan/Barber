@@ -1,0 +1,18 @@
+﻿using Barber.Application.Barbers.Queries;
+using Barber.Application.Barbers.Services;
+using Barber.Domain.Common.Commands;
+using Barber.Domain.Common.Queries;
+using Microsoft.EntityFrameworkCore;
+
+namespace Barber.Infrastructure.Barbers.QueryHandlers;
+
+public class BarberGetAllQueryHandler(IBarberService service) : ICommandHandler<BarberGetAllQuary, List<Domain.Entities.Barber>>
+{
+    public async Task<List<Domain.Entities.Barber>> Handle(BarberGetAllQuary request, CancellationToken cancellationToken)
+    {
+        var allBarbers = await service
+            .Get(request.FilterPagination, new QueryOptions() { TrackingMode = QueryTrackingMode.AsNoTracking })
+            .ToListAsync(cancellationToken);
+        return allBarbers;
+    }
+}

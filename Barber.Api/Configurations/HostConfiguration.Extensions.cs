@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Text;
+using Barber.Application.Barbers.Services;
 using Barber.Application.Users.Services;
+using Barber.Infrastructure.Barbers.Services;
 using Barber.Infrastructure.Users.Services;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Repositories;
@@ -47,6 +49,10 @@ public static partial class HostConfiguration
         // user
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
+        // barber
+        builder.Services.AddScoped<IBarberService, BarberService>();
+        builder.Services.AddScoped<IBarberRepository, BarberRepositories>();
+        
         return builder;
     }
     private static WebApplicationBuilder AddMediator(this WebApplicationBuilder builder)

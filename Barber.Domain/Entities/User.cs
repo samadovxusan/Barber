@@ -11,7 +11,6 @@ public class User : AuditableEntity
     public string PhoneNumber { get; set; } = default!;
 
     public Role Roles { get; set; }
-
-
+    
     // public List<Booking> Bookings { get; set; }
 }
