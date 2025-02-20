@@ -2,6 +2,7 @@
 using AutoMapper;
 using Barber.Application.Barbers.Madels;
 using Barber.Application.Barbers.Services;
+using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Persistence.Extensions;
@@ -20,7 +21,7 @@ public class BarberService(IBarberRepository barberService, IValidator<BarberCre
         return barberService.Get(predicate, queryOptions);
     }
 
-    public IQueryable<Domain.Entities.Barber> Get(FilterPagination productFilter, QueryOptions queryOptions = default)
+    public IQueryable<Domain.Entities.Barber> Get(BarberFilter productFilter, QueryOptions queryOptions = default)
     {
         return barberService.Get(queryOptions: queryOptions).ApplyPagination(productFilter);
     }

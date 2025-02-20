@@ -4,5 +4,5 @@ namespace Barber.Application.Barbers.Commands;
 
 public record DeleteBarberCommand : ICommand<bool>
 {
-    public Guid Id { get; set; }
+    public Guid BarberId { get; set; }
 }

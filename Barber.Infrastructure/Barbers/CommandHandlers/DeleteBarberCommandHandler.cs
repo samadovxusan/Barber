@@ -8,7 +8,7 @@ public class DeleteBarberCommandHandler(IBarberService service):ICommandHandler<
 {
     public async Task<bool> Handle(DeleteBarberCommand request, CancellationToken cancellationToken)
     {
-        var deletebarber = await service.DeleteByIdAsync(request.Id, cancellationToken: cancellationToken);
+        var deletebarber = await service.DeleteByIdAsync(request.BarberId, cancellationToken: cancellationToken);
         return true;
     }
 }

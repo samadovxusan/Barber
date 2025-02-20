@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Barber.Application.Barbers.Madels;
+using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 
@@ -10,7 +11,7 @@ public interface IBarberService
     IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
         QueryOptions queryOptions = default);
 
-    IQueryable<Domain.Entities.Barber> Get(FilterPagination productFilter, QueryOptions queryOptions = default);
+    IQueryable<Domain.Entities.Barber> Get(BarberFilter productFilter, QueryOptions queryOptions = default);
 
     ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);

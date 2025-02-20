@@ -6,17 +6,17 @@
 public class FilterPagination
 {
     /// <summary>
-    /// Gets or sets the number of items to include on each page.(default: 20)
+    /// Gets or sets the number of items to include on each page. (default: 10)
     /// </summary>
     public uint PageSize { get; set; } = 10;
 
     /// <summary>
-    /// Gets or sets the token representing the page to retrieve in a paginated collection.(default: 1)
+    /// Gets or sets the token representing the page to retrieve in a paginated collection. (default: 1)
     /// </summary>
     public uint PageToken { get; set; } = 1;
 
     /// <summary>
-    ///  Initializes a new instance of the <see cref="FilterPagination"/> class with specified page size and page token.
+    /// Initializes a new instance of the <see cref="FilterPagination"/> class with specified page size and page token.
     /// </summary>
     /// <param name="pageSize"></param>
     /// <param name="pageToken"></param>
@@ -26,21 +26,15 @@ public class FilterPagination
         PageToken = pageToken;
     }
 
-    public FilterPagination()
-    {
-    }
+    public FilterPagination() { }
+
     /// <summary>
     /// Gets the hash code for the current <see cref="FilterPagination"/> instance.
     /// </summary>
     /// <returns></returns>
     public override int GetHashCode()
     {
-        var hashCode = new HashCode();
-
-        hashCode.Add(PageSize);
-        hashCode.Add(PageToken);
-
-        return hashCode.ToHashCode();
+        return HashCode.Combine(PageSize, PageToken);
     }
 
     /// <summary>
@@ -50,6 +44,8 @@ public class FilterPagination
     /// <returns></returns>
     public override bool Equals(object? obj)
     {
-        return obj is FilterPagination filterPagination && filterPagination.GetHashCode() == GetHashCode();
+        return obj is FilterPagination filterPagination &&
+               PageSize == filterPagination.PageSize &&
+               PageToken == filterPagination.PageToken;
     }
 }

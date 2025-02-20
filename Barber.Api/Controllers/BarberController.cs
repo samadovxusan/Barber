@@ -1,6 +1,8 @@
 ﻿using Barber.Application.Barbers.Commands;
+using Barber.Application.Barbers.Madels;
 using Barber.Application.Barbers.Queries;
 using Barber.Application.Users.Commands;
+using Barber.Domain.Common.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,13 +10,14 @@ using Microsoft.EntityFrameworkCore;
 namespace Barber.Api.Controllers;
 
 [ApiController]
-[Route(("api [controller]"))]
+[Route("api/[controller]")]
 public class BarberController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] BarberGetAllQuary barberGetQuery,
         CancellationToken cancellationToken)
     {
+        // var pagination = barberGetQuery.FilterPagination ?? new FilterPagination();
         var result = await mediator.Send(barberGetQuery, cancellationToken);
         return Ok(result);
     }
@@ -23,11 +26,11 @@ public class BarberController(IMediator mediator) : ControllerBase
     public async ValueTask<IActionResult> GetById([FromRoute] Guid clientId, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new BarberGetByIdQuery() { Id = clientId }, cancellationToken);
-        return result is not null ? Ok(result) : NoContent();
+        return Ok(result);
     }
 
     [HttpPost]
-    public async ValueTask<IActionResult> Post([FromBody] CreateBerberCommand userCreate,
+    public async ValueTask<IActionResult> Post([FromBody] CreateBerberCommand? userCreate,
         CancellationToken cancellationToken)
     {
         if (userCreate == null)
@@ -41,7 +44,7 @@ public class BarberController(IMediator mediator) : ControllerBase
 
 
     [HttpPut]
-    public async ValueTask<IActionResult> Update([FromBody] Domain.Entities.Barber command,
+    public async ValueTask<IActionResult> Update([FromBody] UpdateBarberCommand command,
         CancellationToken cancellationToken)
     {
         var result = await mediator.Send(command, cancellationToken);
@@ -51,7 +54,7 @@ public class BarberController(IMediator mediator) : ControllerBase
     [HttpDelete("{clientId:guid}")]
     public async ValueTask<IActionResult> DeleteById([FromRoute] Guid clientId, CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new DeleteBarberCommand() { Id = clientId }, cancellationToken);
+        var result = await mediator.Send(new DeleteBarberCommand() { BarberId = clientId }, cancellationToken);
         return result ? Ok() : BadRequest();
     }
 }
