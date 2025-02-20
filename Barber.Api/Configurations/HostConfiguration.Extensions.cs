@@ -1,8 +1,11 @@
 using System.Reflection;
 using System.Text;
 using Barber.Application.Barbers.Services;
+using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
+using Barber.Domain.Entities;
 using Barber.Infrastructure.Barbers.Services;
+using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Repositories;
@@ -52,6 +55,10 @@ public static partial class HostConfiguration
         // barber
         builder.Services.AddScoped<IBarberService, BarberService>();
         builder.Services.AddScoped<IBarberRepository, BarberRepositories>();
+        // Service
+        builder.Services.AddScoped<IService, Servicee>();
+        builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+        
         
         return builder;
     }

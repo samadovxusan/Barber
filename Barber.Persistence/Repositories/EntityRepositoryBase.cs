@@ -2,6 +2,7 @@
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Entities;
 using Barber.Domain.Common.Queries;
+using Barber.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 

@@ -1,0 +1,13 @@
+﻿using Barber.Domain.Common.Commands;
+
+namespace Barber.Application.Servises.Common;
+
+public record ServiceCreateCommand:ICommand<bool>
+{
+    public string Name { get; set; } = default!;
+    public decimal Price { get; set; }
+    public TimeSpan Duration { get; set; }
+    
+    public Guid BarberId { get; set; }
+    
+}
