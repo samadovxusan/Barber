@@ -18,7 +18,7 @@ public class ServiceController (IMediator mediator): Controller
         return Ok(result);
     }
 
-    [HttpGet("{clientId:guid}")]
+    [HttpGet("{serviceId:guid}")]
     public async ValueTask<IActionResult> GetById([FromRoute] Guid clientId, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetByIdQuery() { Id = clientId }, cancellationToken);
@@ -47,7 +47,7 @@ public class ServiceController (IMediator mediator): Controller
         return Ok(result);
     }
 
-    [HttpDelete("{clientId:guid}")]
+    [HttpDelete("{serviceId:guid}")]
     public async ValueTask<IActionResult> DeleteById([FromRoute] Guid clientId, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new ServiceDeleteCommand() { Id = clientId }, cancellationToken);

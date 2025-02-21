@@ -7,7 +7,7 @@ using Barber.Persistence.Repositories.Interface;
 
 namespace Barber.Persistence.Repositories;
 
-public class ServiceRepository(AppDbContext appContext)
+public class ServiceRepositories(AppDbContext appContext)
     : EntityRepositoryBase<Service, AppDbContext>(appContext), IServiceRepository
 {
     public IQueryable<Service> Get(Expression<Func<Service, bool>>? predicate = default, QueryOptions queryOptions = default)

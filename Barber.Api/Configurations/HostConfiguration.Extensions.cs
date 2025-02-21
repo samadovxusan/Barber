@@ -1,10 +1,12 @@
 using System.Reflection;
 using System.Text;
 using Barber.Application.Barbers.Services;
+using Barber.Application.Booking.Service;
 using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
 using Barber.Domain.Entities;
 using Barber.Infrastructure.Barbers.Services;
+using Barber.Infrastructure.Booking.Services;
 using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
 using Barber.Persistence.DataContexts;
@@ -50,15 +52,17 @@ public static partial class HostConfiguration
     private static WebApplicationBuilder AddIdentityInfrastructure(this WebApplicationBuilder builder)
     {
         // user
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepositories>();
         builder.Services.AddScoped<IUserService, UserService>();
         // barber
         builder.Services.AddScoped<IBarberService, BarberService>();
         builder.Services.AddScoped<IBarberRepository, BarberRepositories>();
         // Service
         builder.Services.AddScoped<IService, Servicee>();
-        builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-        
+        builder.Services.AddScoped<IServiceRepository, ServiceRepositories>();
+        // Booking
+        builder.Services.AddScoped(typeof(IBookingService), typeof(BookingService));
+        builder.Services.AddScoped(typeof(IBookingRepositoriess), typeof(BookingRepositories));
         
         return builder;
     }

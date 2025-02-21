@@ -8,7 +8,7 @@ namespace Barber.Application.Barbers.Services;
 
 public interface IBarberService
 {
-    IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
+    IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = null,
         QueryOptions queryOptions = default);
 
     IQueryable<Domain.Entities.Barber> Get(BarberFilter productFilter, QueryOptions queryOptions = default);

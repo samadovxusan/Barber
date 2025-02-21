@@ -5,6 +5,7 @@ using Barber.Application.Barbers.Services;
 using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
+using Barber.Domain.Entities;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
 using FluentValidation;
@@ -18,12 +19,12 @@ public class BarberService(IBarberRepository barberService, IValidator<BarberCre
     public IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
         QueryOptions queryOptions = default)
     {
-        return barberService.Get(predicate, queryOptions);
+        return barberService.Get(predicate,queryOptions);
     }
 
     public IQueryable<Domain.Entities.Barber> Get(BarberFilter productFilter, QueryOptions queryOptions = default)
     {
-        return barberService.Get(queryOptions: queryOptions).ApplyPagination(productFilter);
+        return barberService.Get(queryOptions:queryOptions).ApplyPagination(productFilter);
     }
 
     public ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,

@@ -1,12 +1,14 @@
 ﻿using System.Linq.Expressions;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
+using Barber.Domain.Entities;
 
 namespace Barber.Persistence.Repositories.Interface;
 
 public interface IBarberRepository
 {
-     IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default, QueryOptions queryOptions = default);
+     IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
+         QueryOptions queryOptions = default);
 
     /// <summary>
     /// Asynchronously retrieves a client entity by its unique identifier.
