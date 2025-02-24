@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using Barber.Api.Hubs;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;
 using Barber.Application.Servises.Sarvices;
@@ -98,6 +99,7 @@ public static partial class HostConfiguration
         );
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
         builder.Services.AddControllers();
+        builder.Services.AddSignalR();
 
         return builder;
     }
@@ -139,6 +141,11 @@ public static partial class HostConfiguration
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapHub<BookingHub>("/bookingHub"); // ✅ SignalR Hub
+        });
 
         return app;
     }

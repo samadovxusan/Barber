@@ -1,4 +1,3 @@
-
 using Barber.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);

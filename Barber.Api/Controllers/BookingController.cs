@@ -1,13 +1,15 @@
-﻿using Barber.Application.Booking.Commonds;
+﻿using Barber.Api.Hubs;
+using Barber.Application.Booking.Commonds;
 using Barber.Application.Booking.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Barber.Api.Controllers;
 
 [Controller]
 [Route("api/[controller]")]
-public class BookingController(IMediator mediator) : ControllerBase
+public class BookingController(IMediator mediator,IHubContext<BookingHub> hubContext) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] BookingGetQuery bookingGetQuery,
@@ -34,6 +36,7 @@ public class BookingController(IMediator mediator) : ControllerBase
         }
 
         var result = await mediator.Send(userCreate, cancellationToken);
+        await hubContext.Clients.All.SendAsync("ReceiveBookingUpdate", $"New booking added for {userCreate.AppointmentTime}");
         return result ? Ok(result) : NoContent();
     }
 
