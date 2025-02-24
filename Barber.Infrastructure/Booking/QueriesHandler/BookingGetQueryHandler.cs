@@ -11,13 +11,18 @@ public  class BookingGetQueryHandler(IBookingService service):IQueryHandler<Book
     {
         if (request.Filters != null)
         {
-            var allBarbers = await service
+            var allBookings = await service
                 .Get(request.Filters, new QueryOptions() { TrackingMode = QueryTrackingMode.AsNoTracking })
+                .Include(b => b.User) 
+                .Include(b => b.Barber)   
+                .Include(b => b.Service)  
                 .ToListAsync(cancellationToken);
-            return allBarbers;
+
+            return allBookings;
         }
 
         return null;
     }
+
     
 }

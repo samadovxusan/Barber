@@ -10,7 +10,7 @@ public class User : AuditableEntity
     public string PasswordHash { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
 
-    public Role Roles { get; set; }
-    
+    public Role Roles { get; set; } = Role.Customer;
+
     // public List<Booking> Bookings { get; set; }
 }

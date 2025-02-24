@@ -4,12 +4,14 @@ using Barber.Application.Barbers.Queries;
 using Barber.Application.Users.Commands;
 using Barber.Domain.Common.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class BarberController(IMediator mediator) : ControllerBase
 {
