@@ -1,11 +1,11 @@
 using System.Reflection;
 using System.Text;
+using Barber.Api.Hubs;
 using Barber.Application.Auth.Services;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;
 using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
-using Barber.Domain.Entities;
 using Barber.Infrastructure.Auth.Services;
 using Barber.Infrastructure.Barbers.Services;
 using Barber.Infrastructure.Booking.Services;
@@ -147,6 +147,7 @@ public static partial class HostConfiguration
     {
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddSignalR();
 
         return builder;
     }
@@ -176,10 +177,17 @@ public static partial class HostConfiguration
     /// <returns></returns>
     private static WebApplication UseCors(this WebApplication app)
     {
-        app.UseCors("AllowSpecificOrigin");
+        app.UseCors(options =>
+        {
+            options.WithOrigins("http://127.0.0.1:5500") // Faqat frontend uchun ruxsat berish
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials(); // Cookie va auth tokenlar bilan ishlash uchun
+        });
 
         return app;
     }
+
 
     /// <summary>
     /// Add Controller middleWhere
@@ -205,6 +213,7 @@ public static partial class HostConfiguration
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+        app.MapHub<BookingHub>("/bookingHub");
 
         return app;
     }

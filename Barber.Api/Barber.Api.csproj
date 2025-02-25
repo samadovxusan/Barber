@@ -27,6 +27,7 @@
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="9.0.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
