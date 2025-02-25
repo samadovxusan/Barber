@@ -4,11 +4,14 @@ using Barber.Api.Hubs;
 using Barber.Application.Auth.Services;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;
+using Barber.Application.Reviews.Services;
 using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
+using Barber.Domain.Entities;
 using Barber.Infrastructure.Auth.Services;
 using Barber.Infrastructure.Barbers.Services;
 using Barber.Infrastructure.Booking.Services;
+using Barber.Infrastructure.Reviews.Service;
 using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
 using Barber.Persistence.DataContexts;
@@ -71,6 +74,13 @@ public static partial class HostConfiguration
         
         // Auth
         builder.Services.AddScoped<IAuthService, AuthService>();
+        
+        // Review
+
+        builder.Services.AddScoped<IReviewService, ReviewService>();
+        
+        
+        
         
          builder.Services.AddSwaggerGen(c =>
         {
@@ -163,7 +173,11 @@ public static partial class HostConfiguration
             options => { options.SuppressModelStateInvalidFilter = true; }
         );
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+            options.JsonSerializerOptions.WriteIndented = true;
+        });
         builder.Services.AddSignalR();
 
         return builder;

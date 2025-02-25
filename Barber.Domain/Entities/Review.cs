@@ -1,0 +1,13 @@
+﻿using Barber.Domain.Common.Entities;
+
+namespace Barber.Domain.Entities;
+
+public class Review : AuditableEntity
+{
+    public int BarberId { get; set; }
+    public string Comment { get; set; } = default!;
+    public int Rating { get; set; } // 1 - 5 ball
+
+    public User? Client { get; set; }
+    public Barber? Barber { get; set; }
+}

@@ -19,6 +19,6 @@ public class AppDbContext : DbContext
     public DbSet<Domain.Entities.Barber> Barbers { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<Booking> Bookings { get; set; }
-    
+    public DbSet<Review> Reviews { get; set; }
     
 }
