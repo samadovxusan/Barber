@@ -8,5 +8,5 @@ public class Barber : AuditableEntity
 
     public string Description { get; set; } = default!;
 
-    public ICollection<Service>? Services { get; set; } = new List<Service>();
+    public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
 }

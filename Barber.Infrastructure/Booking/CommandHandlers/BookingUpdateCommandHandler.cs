@@ -9,7 +9,7 @@ public class BookingUpdateCommandHandler(IBookingService service):ICommandHandle
     public async Task<bool> Handle(BookingUpdateCommand request, CancellationToken cancellationToken)
     {
         var booking = await service.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
-        booking.BookingTime = request.AppointmentTime;
+        booking.AppointmentTime = request.AppointmentTime;
         booking.ModifiedTime = DateTimeOffset.UtcNow;
 
         var result = await service.UpdateAsync(booking, cancellationToken: cancellationToken);
