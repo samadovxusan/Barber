@@ -9,5 +9,5 @@ public class Service:AuditableEntity
     public TimeSpan Duration { get; set; }
     
     public Guid BarberId { get; set; }
-    public Barber Barber { get; set; }
+    public Barber? Barber { get; set; }
 }

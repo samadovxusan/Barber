@@ -12,5 +12,5 @@ public class User : AuditableEntity
 
     public Role Roles { get; set; } = Role.Customer;
 
-    // public List<Booking> Bookings { get; set; }
+    public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }
