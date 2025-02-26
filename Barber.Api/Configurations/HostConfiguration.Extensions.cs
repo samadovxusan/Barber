@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using Barber.Api.Data;
 using Barber.Api.Hubs;
 using Barber.Application.Auth.Services;
 using Barber.Application.Barbers.Services;
@@ -57,6 +58,15 @@ public static partial class HostConfiguration
         return builder;
     }
 
+    private static async ValueTask<WebApplication> SeedDataAsync(this WebApplication app)
+    {
+        var serviceScope = app.Services.CreateScope();
+        await serviceScope.ServiceProvider.InitializeSeedAsync();
+
+        return app;
+    }
+    
+    
     private static WebApplicationBuilder AddIdentityInfrastructure(this WebApplicationBuilder builder)
     {
         // user

@@ -29,6 +29,7 @@ public static partial class HostConfiguration
     public static async ValueTask<WebApplication> ConfigureAsync(this WebApplication app)
     {
         app.UseCors();
+        await app.SeedDataAsync();
         app
             .UseDevTools()
             .UseExposers();
