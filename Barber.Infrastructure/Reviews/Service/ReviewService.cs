@@ -1,17 +1,32 @@
 ﻿using Barber.Application.Reviews.Services;
 using Barber.Domain.Entities;
+using Barber.Persistence.DataContexts;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Infrastructure.Reviews.Service;
 
-public class ReviewService:IReviewService
+public class ReviewService(AppDbContext appDbContext,IValidator<Review> validator):IReviewService
 {
-    public Task<List<Review>> GetReviewsByBarberAsync(Guid barberId)
+    public async Task<List<Review>> GetReviewsByBarberAsync(Guid barberId)
     {
-        throw new NotImplementedException();
+        return await appDbContext.Reviews
+            .Where(r => r.BarberId == barberId)
+            .ToListAsync();
     }
 
-    public Task<Review> AddReviewAsync(Review reviewDto)
+    public async Task<Review> AddReviewAsync(Review reviewDto)
     {
-        throw new NotImplementedException();
+        var validationResult = await validator.ValidateAsync(reviewDto);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        var result = await appDbContext.Reviews.AddAsync(reviewDto);
+        await appDbContext.SaveChangesAsync();
+        return reviewDto;
+
+
     }
 }

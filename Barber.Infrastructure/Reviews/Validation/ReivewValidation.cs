@@ -8,8 +8,7 @@ public class ReivewValidation : AbstractValidator<Review>
     public ReivewValidation()
     {
         RuleFor(r => r.BarberId)
-            .NotEmpty().WithMessage("BarberId is required.")
-            .GreaterThan(0).WithMessage("BarberId must be greater than 0.");
+            .NotEmpty().WithMessage("BarberId is required.");
 
         RuleFor(r => r.Comment)
             .NotEmpty().WithMessage("Comment is required.")

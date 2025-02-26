@@ -1,37 +1,29 @@
-﻿using Barber.Application.Reviews.Models;
+﻿using Barber.Application.Reviews.Commands;
+using Barber.Application.Reviews.Models;
+using Barber.Application.Reviews.Queries;
 using Barber.Application.Reviews.Services;
 using Barber.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Barber.Api.Controllers;
 
 [ApiController]
 [Route("api/reviews")]
-public class ReviewsController : ControllerBase
+public class ReviewsController(IReviewService service, IMediator mediator) : ControllerBase
 {
-    private readonly IReviewService _reviewService;
-
-    public ReviewsController(IReviewService reviewService)
-    {
-        _reviewService = reviewService;
-    }
-
     [HttpGet("barber/{barberId}")]
     public async Task<IActionResult> GetReviewsByBarber(Guid barberId)
     {
-        var reviews = await _reviewService.GetReviewsByBarberAsync(barberId);
-        return Ok(reviews);
+        
+        var result = await service.GetReviewsByBarberAsync(barberId);
+        return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddReview([FromBody] Review reviewDto)
+    public async Task<IActionResult> AddReview([FromBody] CreateReviewCommand command)
     {
-        if (reviewDto.Rating < 1 || reviewDto.Rating > 5)
-        {
-            return BadRequest("Rating must be between 1 and 5.");
-        }
-
-        var createdReview = await _reviewService.AddReviewAsync(reviewDto);
-        return CreatedAtAction(nameof(GetReviewsByBarber), new { barberId = createdReview.BarberId }, createdReview);
+        var result = await mediator.Send(command);
+        return Ok(result);
     }
 }

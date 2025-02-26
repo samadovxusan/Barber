@@ -12,6 +12,7 @@ public class CreateReviewCommandHandler(IReviewService service):ICommandHandler<
         var newreview = new Review()
         {
             BarberId = request.BarberId,
+            UserId = request.UserId,
             Comment = request.Comment,
             Rating = request.Rating
 

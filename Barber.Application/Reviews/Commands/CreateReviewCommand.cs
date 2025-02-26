@@ -5,8 +5,8 @@ namespace Barber.Application.Reviews.Commands;
 
 public class CreateReviewCommand : ICommand<Review>
 {
-    public int ClientId { get; set; }
-    public int BarberId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid BarberId { get; set; }
     public string Comment { get; set; } = default!;
     public int Rating { get; set; }
 }
