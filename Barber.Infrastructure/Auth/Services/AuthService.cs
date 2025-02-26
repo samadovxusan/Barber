@@ -29,7 +29,7 @@ public class AuthService(AppDbContext dbContext, IMapper mapper, IConfiguration 
     public async ValueTask<LoginDto> Login(Login login)
     {
         var token = new LoginDto();
-        var newUser = await dbContext.Users.FirstOrDefaultAsync(x => x.PasswordHash == login.PasswordHash && x.Email == login.Email);
+        var newUser = await dbContext.Users.FirstOrDefaultAsync(x => x.Password == login.Password && x.PhoneNumber == login.PhoneNumber);
         if(newUser == null)
         {
             token.Success = false;

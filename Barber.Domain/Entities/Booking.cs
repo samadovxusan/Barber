@@ -7,13 +7,10 @@ public class Booking:AuditableEntity
 {
     public DateTime AppointmentTime { get; set; }
     public Status Status { get; set; } = Enums.Status.Pending;
-    
     public Guid UserId { get; set; }
     public User? User { get; set; }
-
     public Guid BarberId { get; set; }
     public Barber? Barber { get; set; }
-    
     public Guid ServiceId { get; set; }
     public Service? Service { get; set; }
 }

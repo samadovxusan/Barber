@@ -6,34 +6,26 @@ using Barber.Domain.Entities;
 
 namespace Barber.Infrastructure.Users.CommandHandlers;
 
-public class UserCreateCommandHandler : ICommandHandler<UserCreateCommand, bool>
+public class UserCreateCommandHandler(IUserService service, IMapper mapper) : ICommandHandler<UserCreateCommand, bool>
 {
-    private readonly IUserService _service;
-    private readonly IMapper _mapper;
+    private readonly IMapper _mapper = mapper;
 
-    public UserCreateCommandHandler(IUserService service, IMapper mapper)
-    {
-        _service = service;
-        _mapper = mapper;
-    }
-
-    public async Task<bool> Handle(UserCreateCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(UserCreateCommand? request, CancellationToken cancellationToken)
     {
         if (request == null)
         {
-            // Requestdagi UserCreate null bo'lsa, xato qaytarish
             return false;
         }
 
         var mapUser = new User()
         {
             FullName = request.FullName,
-            Email = request.Email,
-            PasswordHash = request.PasswordHash,
+            Password = request.Password,
             PhoneNumber = request.PhoneNumber,
             CreatedTime = DateTimeOffset.UtcNow,
+            Roles = request.Roles
         };
-        var createUser = await _service.CreateAsync(mapUser);
+        var createUser = await service.CreateAsync(mapUser, cancellationToken: cancellationToken);
 
         return true;
     }

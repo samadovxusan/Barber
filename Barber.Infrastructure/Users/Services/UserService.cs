@@ -44,8 +44,7 @@ public class UserService(IUserRepository userRepository, IValidator<User> valida
                           throw new InvalidOperationException();
 
         foundClient.FullName = user.FullName;
-        foundClient.Email = user.Email;
-        foundClient.PasswordHash = user.PasswordHash;
+        foundClient.Password = user.Password;
         foundClient.PhoneNumber = user.PhoneNumber;
 
         return await userRepository.UpdateAsync(foundClient, commandOptions, cancellationToken);

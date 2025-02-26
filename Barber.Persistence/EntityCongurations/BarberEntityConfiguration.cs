@@ -8,7 +8,7 @@ public class BarberEntityConfiguration:IEntityTypeConfiguration<Domain.Entities.
     public void Configure(EntityTypeBuilder<Domain.Entities.Barber> builder)
     {
         builder.HasKey(b => b.Id);
-        builder.Property(b => b.Name).IsRequired().HasMaxLength(100);
+        builder.Property(b => b.FullName).IsRequired().HasMaxLength(100);
         
         // Relationship: Barber -> Booking (One-to-Many)
         builder.HasMany(b => b.Bookings)

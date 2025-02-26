@@ -19,8 +19,7 @@ public class IdentityTokenGeneratorService(IConfiguration configuration):IIdenti
                     new Claim("Id", user.Id.ToString()),
                     new Claim("UserName", user.FullName),
                     new Claim("Number", user.PhoneNumber),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim("password" , user.PasswordHash),
+                    new Claim("password" , user.Password),
                     new Claim(ClaimTypes.Role , user.Roles.ToString()),
                     new Claim("CreatedDate", DateTime.UtcNow.ToString()),
 

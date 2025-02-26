@@ -14,7 +14,8 @@ public class CreateReviewCommandHandler(IReviewService service):ICommandHandler<
             BarberId = request.BarberId,
             UserId = request.UserId,
             Comment = request.Comment,
-            Rating = request.Rating
+            Rating = request.Rating,
+            CreatedTime = DateTimeOffset.UtcNow
 
         };
         var result = await service.AddReviewAsync(newreview);

@@ -9,6 +9,7 @@ public class CreateBarberCommandHandler(IBarberService barberService):ICommandHa
     public async Task<bool> Handle(CreateBerberCommand request, CancellationToken cancellationToken)
     {
         var result = await barberService.CreateAsync(request.BarberCreate, cancellationToken: cancellationToken);
+        result.CreatedTime= DateTimeOffset.UtcNow;
         return true;
     }
 }

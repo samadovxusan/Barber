@@ -13,9 +13,9 @@ public class UserUpdateCommandHandler(IUserService service, IMapper mapper)
     public async Task<UserDto> Handle(UserUpdateCommand request, CancellationToken cancellationToken)
     {
         var entity = mapper.Map<User>(request.UserDto);
-
+        entity.ModifiedTime = DateTimeOffset.UtcNow;
         var updateUser = await service.UpdateAsync(entity, cancellationToken: cancellationToken);
-
+        
         return mapper.Map<UserDto>(updateUser);
     }
 }
