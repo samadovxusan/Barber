@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35806.99 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Barber.Application", "Barber.Application\Barber.Application.csproj", "{DDD60513-89AB-41C5-9BDC-C5B4A1A99C58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Barber.Domain", "Barber.Domain\Barber.Domain.csproj", "{833B1072-4123-4154-930B-C78104887F5C}"
@@ -36,5 +39,11 @@ Global
 		{67F37461-3329-453A-A269-BE5DC86C33CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67F37461-3329-453A-A269-BE5DC86C33CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67F37461-3329-453A-A269-BE5DC86C33CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6CA113A7-A72C-461D-8AC2-19303AD54320}
 	EndGlobalSection
 EndGlobal
