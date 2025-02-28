@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using Barber.Api.Data;
 using Barber.Api.Hubs;
+using Barber.Api.Middleware;
 using Barber.Application.Auth.Services;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;
@@ -241,6 +242,7 @@ public static partial class HostConfiguration
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+        app.UseMiddleware<GlobalException>();
         app.MapHub<BookingHub>("/bookingHub");
 
         return app;

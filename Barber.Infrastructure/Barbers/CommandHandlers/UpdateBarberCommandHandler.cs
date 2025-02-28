@@ -18,7 +18,6 @@ public class UpdateBarberCommandHandler(IBarberService service)
             FullName = request.FullName,
             PhoneNumber = request.PhoneNumber,
             Password = request.Password,
-            Role = request.Role,
         };
 
 
