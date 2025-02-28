@@ -12,7 +12,20 @@ public class BarberGetAllQueryHandler(IBarberService service) : ICommandHandler<
     {
         var allBarbers = await service
             .Get(request.FilterPagination, new QueryOptions() { TrackingMode = QueryTrackingMode.AsNoTracking })
+            .Include(b => b.Bookings)
             .ToListAsync(cancellationToken);
+
+        foreach (var barber in allBarbers)
+        {
+            barber.Bookings = barber.Bookings.Select(b => new Domain.Entities.Booking
+            {
+                UserId = b.UserId,
+                ServiceId = b.ServiceId,
+                AppointmentTime = b.AppointmentTime
+            }).ToList();
+        }
+
         return allBarbers;
     }
+
 }

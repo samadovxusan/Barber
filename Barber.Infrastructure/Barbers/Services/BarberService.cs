@@ -6,14 +6,16 @@ using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
+using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Xunarmand.Domain.Enums;
 
 namespace Barber.Infrastructure.Barbers.Services;
 
-public class BarberService(IBarberRepository barberService, IValidator<BarberCreate> validator, IMapper mapper)
+public class BarberService(IBarberRepository barberService, IValidator<BarberCreate> validator,AppDbContext context, IMapper mapper)
     : IBarberService
 {
     public IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
@@ -27,11 +29,13 @@ public class BarberService(IBarberRepository barberService, IValidator<BarberCre
         return barberService.Get(queryOptions:queryOptions).ApplyPagination(productFilter);
     }
 
-    public ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
-        CancellationToken cancellationToken = default)
+    public async ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid id, QueryOptions options, CancellationToken cancellationToken)
     {
-        return barberService.GetByIdAsync(userId, queryOptions, cancellationToken);
+        return await context.Barbers
+            .Include(b => b.Bookings) // Booking'larni qo'shish
+            .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
+
 
     public ValueTask<Domain.Entities.Barber> CreateAsync(BarberCreate product,
         CommandOptions commandOptions = default,

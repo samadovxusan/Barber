@@ -19,7 +19,6 @@ public class BarberController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Get([FromQuery] BarberGetAllQuary barberGetQuery,
         CancellationToken cancellationToken)
     {
-        // var pagination = barberGetQuery.FilterPagination ?? new FilterPagination();
         var result = await mediator.Send(barberGetQuery, cancellationToken);
         return Ok(result);
     }

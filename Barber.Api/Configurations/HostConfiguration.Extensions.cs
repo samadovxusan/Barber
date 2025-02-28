@@ -88,9 +88,12 @@ public static partial class HostConfiguration
         // Review
 
         builder.Services.AddScoped<IReviewService, ReviewService>();
+
+
+        #region JWT Bearer
+
         
-        
-        
+
         
          builder.Services.AddSwaggerGen(c =>
         {
@@ -148,7 +151,8 @@ public static partial class HostConfiguration
                 ClockSkew = TimeSpan.Zero,
             };
         }
-        
+        #endregion 
+
         return builder;
     }
     private static WebApplicationBuilder AddMediator(this WebApplicationBuilder builder)
@@ -183,13 +187,13 @@ public static partial class HostConfiguration
             options => { options.SuppressModelStateInvalidFilter = true; }
         );
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
-        builder.Services.AddControllers().AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-            options.JsonSerializerOptions.WriteIndented = true;
-        });
-        builder.Services.AddSignalR();
+     builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+        
+        
+        builder.Services.AddSignalR();
         return builder;
     }
 
