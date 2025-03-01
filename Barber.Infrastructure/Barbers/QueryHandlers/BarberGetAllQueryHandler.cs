@@ -13,6 +13,7 @@ public class BarberGetAllQueryHandler(IBarberService service) : ICommandHandler<
         var allBarbers = await service
             .Get(request.FilterPagination, new QueryOptions() { TrackingMode = QueryTrackingMode.AsNoTracking })
             .Include(b => b.Bookings)
+            .Include(i=> i.Images)
             .ToListAsync(cancellationToken);
 
         foreach (var barber in allBarbers)
