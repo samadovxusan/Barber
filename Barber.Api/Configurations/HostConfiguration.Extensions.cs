@@ -238,11 +238,11 @@ public static partial class HostConfiguration
     /// <returns>Application host</returns>
     private static WebApplication UseExposers(this WebApplication app)
     {
+        app.UseMiddleware<GlobalException>();
         app.UseStaticFiles();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-        app.UseMiddleware<GlobalException>();
         app.MapHub<BookingHub>("/bookingHub");
 
         return app;

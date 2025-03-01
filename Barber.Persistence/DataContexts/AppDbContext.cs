@@ -1,4 +1,5 @@
-﻿using Barber.Domain.Entities;
+﻿using System.Net.Mime;
+using Barber.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Persistence.DataContexts;
@@ -20,5 +21,6 @@ public class AppDbContext : DbContext
     public DbSet<Service> Services { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Review> Reviews { get; set; }
-    
+    public DbSet<Images> Imageses { get; set; }
+
 }
