@@ -33,6 +33,7 @@ public class BarberService(IBarberRepository barberService, IValidator<BarberCre
     {
         return await context.Barbers
             .Include(b => b.Bookings) // Booking'larni qo'shish
+            .Include(b =>b.Images)
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 

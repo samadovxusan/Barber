@@ -56,7 +56,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Barbers");
+                    b.ToTable("Barbers", (string)null);
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Booking", b =>
@@ -95,7 +95,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Images", b =>
@@ -112,7 +112,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Imageses");
+                    b.ToTable("Imageses", (string)null);
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Review", b =>
@@ -146,7 +146,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Service", b =>
@@ -178,7 +178,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasIndex("BarberId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.User", b =>
@@ -211,7 +211,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Booking", b =>
