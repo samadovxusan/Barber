@@ -10,7 +10,7 @@ public interface IBookingRepositoriess
     IQueryable<Booking> Get(Expression<Func<Booking, bool>>? predicate = default,
         QueryOptions queryOptions = default);
 
-    ValueTask<Booking> GetById(Guid bookingId, QueryOptions queryOptions = default,
+    ValueTask<Booking?> GetById(Guid bookingId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
 
     ValueTask<Booking> Create(Booking? booking, CancellationToken cancellationToken = default,

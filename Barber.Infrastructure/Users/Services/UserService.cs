@@ -27,12 +27,19 @@ public class UserService(IUserRepository userRepository, IValidator<User> valida
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = validator
-            .Validate(user);
+        var validationResult = validator.Validate(user);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.IsValid.ToString());
+            throw new ValidationException(validationResult.Errors.ToString()); // `.IsValid.ToString()` emas, xatolarni ko‘rsatish uchun `.Errors`
 
+        var foundUser = userRepository.Get(x => x.PhoneNumber == user.PhoneNumber && x.FullName == user.FullName);
+    
+        if (foundUser != null) // oldin ro'yxatdan o'tgan userni tekshirish
+        {
+            throw new InvalidOperationException("This number or name has already been registered.");
+        }
+
+        user.CreatedTime = DateTimeOffset.UtcNow;
         return userRepository.CreateAsync(user, new CommandOptions(skipSaveChanges: false), cancellationToken);
     }
 
@@ -46,6 +53,7 @@ public class UserService(IUserRepository userRepository, IValidator<User> valida
         foundClient.FullName = user.FullName;
         foundClient.Password = user.Password;
         foundClient.PhoneNumber = user.PhoneNumber;
+        foundClient.CreatedTime = DateTimeOffset.UtcNow;
 
         return await userRepository.UpdateAsync(foundClient, commandOptions, cancellationToken);
     }

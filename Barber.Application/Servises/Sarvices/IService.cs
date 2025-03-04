@@ -16,11 +16,11 @@ public interface IService
     ValueTask<Service?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
 
-    ValueTask<Service> CreateAsync(Service service, CommandOptions commandOptions = default,
+    ValueTask<Service> CreateAsync(ServiceCreate service, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
 
 
-    ValueTask<Service> UpdateAsync(Service service, CommandOptions commandOptions = default,
+    ValueTask<Service> UpdateAsync(ServiceUpdate service, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
 
 

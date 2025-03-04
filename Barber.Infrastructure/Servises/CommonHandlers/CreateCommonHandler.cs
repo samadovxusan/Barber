@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Barber.Application.Servises.Common;
+using Barber.Application.Servises.Commonds;
+using Barber.Application.Servises.Models;
 using Barber.Application.Servises.Sarvices;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Entities;
@@ -10,15 +11,15 @@ public class CreateCommonHandler(IService serviced,IMapper mapper):ICommandHandl
 {
     public async Task<bool> Handle(ServiceCreateCommand request, CancellationToken cancellationToken)
     {
-        var mapservice = new Service()
+        var service = new ServiceCreate
         {
-            Name = request.Name,
-            Duration = request.Duration,
             BarberId = request.BarberId,
-            Price = request.Price,
-            CreatedTime = DateTimeOffset.UtcNow
+            Duration = request.Duration,
+            ImageUrl = request.ImageUrl,
+            Name = request.Name,
+            Price = request.Price
         };
-        var newservice = await serviced.CreateAsync(mapservice, cancellationToken: cancellationToken);
+        var newservice = await serviced.CreateAsync(service, cancellationToken: cancellationToken);
         return true;
     }
 }

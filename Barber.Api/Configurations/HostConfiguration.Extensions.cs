@@ -6,6 +6,7 @@ using Barber.Api.Middleware;
 using Barber.Application.Auth.Services;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;
+using Barber.Application.Common.Settings;
 using Barber.Application.Reviews.Services;
 using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
@@ -25,7 +26,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Xunarmand.Application.Common.Settings;
 
 namespace Barber.Api.Configurations;
 
@@ -208,7 +208,7 @@ public static partial class HostConfiguration
     {
         app.UseCors(options =>
         {
-            options.WithOrigins("http://127.0.0.1:5500") // Faqat frontend uchun ruxsat berish
+            options.WithOrigins("http://localhost:4200") // Faqat frontend uchun ruxsat berish
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials(); // Cookie va auth tokenlar bilan ishlash uchun
@@ -238,7 +238,7 @@ public static partial class HostConfiguration
     /// <returns>Application host</returns>
     private static WebApplication UseExposers(this WebApplication app)
     {
-        app.UseMiddleware<GlobalException>();
+        // app.UseMiddleware<GlobalException>();
         app.UseStaticFiles();
         app.UseAuthentication();
         app.UseAuthorization();

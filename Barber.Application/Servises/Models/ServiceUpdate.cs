@@ -1,17 +1,14 @@
-﻿using Barber.Application.Servises.Models;
-using Barber.Domain.Common.Commands;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace Barber.Application.Servises.Commonds;
+namespace Barber.Application.Servises.Models;
 
-public class ServiceCreateCommand:ICommand<bool>
+public class ServiceUpdate
 {
-
+    public Guid Id { get; set; }
     public string Name { get; set; } = default!;
     public decimal Price { get; set; }
     public TimeSpan Duration { get; set; }
     public IFormFile ImageUrl { get; set; } = default!; 
     
     public Guid BarberId { get; set; }
-
 }

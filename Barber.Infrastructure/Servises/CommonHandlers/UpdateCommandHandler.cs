@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Barber.Application.Servises.Common;
+using Barber.Application.Servises.Commonds;
 using Barber.Application.Servises.Sarvices;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Entities;
@@ -10,15 +10,7 @@ public class UpdateCommandHandler(IService services, IMapper mapper) : ICommandH
 {
     public async Task<bool> Handle(ServiceUpdateCommand request, CancellationToken cancellationToken)
     {
-        var mapservice = new Service
-        {
-            Name = request.Name,
-            Duration = request.Duration,
-            Price = request.Price,
-            BarberId = request.BarberId,
-            ModifiedTime = DateTimeOffset.UtcNow
-        };
-        var result = await services.UpdateAsync(mapservice, cancellationToken: cancellationToken);
+        var result = await services.UpdateAsync(request.ServiceUpdate, cancellationToken: cancellationToken);
         return true;
     }
 }

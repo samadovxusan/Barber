@@ -1,5 +1,6 @@
 ﻿using Barber.Domain.Common.Entities;
 using Barber.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Barber.Application.Barbers.Madels;
 
@@ -11,5 +12,5 @@ public class BarberDto
     public string PhoneNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public Role Role { get; set; }
+    public IFormFile ImagetUrl { get; set; } = default!;
 }

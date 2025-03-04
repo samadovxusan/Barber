@@ -127,7 +127,7 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
 
         if (!commandOptions.SkipSaveChanges)
             await DbContext.SaveChangesAsync(cancellationToken);
-
+        
         return entity;
     }
 

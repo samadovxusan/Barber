@@ -1,6 +1,6 @@
 ﻿using Barber.Domain.Common.Commands;
 
-namespace Barber.Application.Servises.Common;
+namespace Barber.Application.Servises.Commonds;
 
 public class ServiceDeleteCommand:ICommand<bool>
 {

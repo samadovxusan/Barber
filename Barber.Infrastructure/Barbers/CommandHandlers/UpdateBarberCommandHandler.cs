@@ -10,18 +10,7 @@ public class UpdateBarberCommandHandler(IBarberService service)
 {
     public async Task<Domain.Entities.Barber> Handle(UpdateBarberCommand request, CancellationToken cancellationToken)
     {
-        var barber = new BarberDto()
-        {
-            Id = request.Id,
-            Address = request.Address,
-            Age = request.Age,
-            FullName = request.FullName,
-            PhoneNumber = request.PhoneNumber,
-            Password = request.Password,
-        };
-
-
-        var result = await service.UpdateAsync(barber, cancellationToken: cancellationToken);
+        var result = await service.UpdateAsync(request.BarberDto, cancellationToken: cancellationToken);
         result.ModifiedTime = DateTimeOffset.UtcNow;
         return result;
     }

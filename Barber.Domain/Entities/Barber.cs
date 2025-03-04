@@ -9,6 +9,7 @@ public class Barber : AuditableEntity
     public string PhoneNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = string.Empty;
     public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
-    public ICollection<Images>? Images { get; set; } = new List<Images>();
+    public ICollection<Images> Images { get; set; } = new List<Images>();
 }
