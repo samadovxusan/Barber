@@ -17,7 +17,7 @@ using Xunarmand.Domain.Enums;
 
 namespace Barber.Infrastructure.Barbers.Services;
 
-public class BarberService(IWebHostEnvironment webHostEnvironment,IBarberRepository barberService ,AppDbContext appDbContext , IValidator<BarberCreate> validator ,AppDbContext context, IMapper mapper)
+public class BarberService(IBarberRepository barberService, IValidator<BarberCreate> validator,AppDbContext context, IMapper mapper)
     : IBarberService
 {
     public IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
@@ -51,17 +51,6 @@ public class BarberService(IWebHostEnvironment webHostEnvironment,IBarberReposit
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
-
-        var newuser = await appDbContext.Barbers.FirstOrDefaultAsync(b => b.PhoneNumber == product.PhoneNumber, cancellationToken: cancellationToken);
-        if(newuser != null)
-        {
-            throw new InvalidOperationException("This number or name has already been registered.");
-        }
-        
-        
-        var extention = new MethodExtention(webHostEnvironment);
-        var imageUrl =  await extention.AddPictureAndGetPath(product.ImageUrl);
-        
         var barber = mapper.Map<Domain.Entities.Barber>(product);
         barber.ImageUrl = imageUrl;
         
