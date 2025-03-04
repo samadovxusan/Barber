@@ -1,4 +1,4 @@
-﻿namespace Xunarmand.Application.Common.Settings;
+﻿namespace Barber.Application.Common.Settings;
 
 /// <summary>
 /// Represents the settings for validation.

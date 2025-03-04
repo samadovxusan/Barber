@@ -29,12 +29,14 @@ public class BookingService(IBookingRepositoriess repositoriess):IBookingService
     public ValueTask<Domain.Entities.Booking> CreateAsync(Domain.Entities.Booking booking, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
+        booking.CreatedTime =DateTimeOffset.UtcNow;
         return repositoriess.Create(booking, cancellationToken);
     }
 
     public ValueTask<Domain.Entities.Booking> UpdateAsync(Domain.Entities.Booking booking, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
+        booking.ModifiedTime = DateTimeOffset.UtcNow;
         return repositoriess.Update(booking, cancellationToken);
     }
 

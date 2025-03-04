@@ -1,4 +1,5 @@
-﻿using Barber.Application.Users.Models;
+﻿using Barber.Application.Barbers.Madels;
+using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 

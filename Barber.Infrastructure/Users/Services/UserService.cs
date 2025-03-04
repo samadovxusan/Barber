@@ -32,7 +32,7 @@ public class UserService(IUserRepository userRepository, IValidator<User> valida
 
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.IsValid.ToString());
-
+        user.CreatedTime = DateTimeOffset.UtcNow;
         return userRepository.CreateAsync(user, new CommandOptions(skipSaveChanges: false), cancellationToken);
     }
 
@@ -46,6 +46,7 @@ public class UserService(IUserRepository userRepository, IValidator<User> valida
         foundClient.FullName = user.FullName;
         foundClient.Password = user.Password;
         foundClient.PhoneNumber = user.PhoneNumber;
+        foundClient.CreatedTime = DateTimeOffset.UtcNow;
 
         return await userRepository.UpdateAsync(foundClient, commandOptions, cancellationToken);
     }

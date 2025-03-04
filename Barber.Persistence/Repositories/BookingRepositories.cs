@@ -14,7 +14,8 @@ public class BookingRepositories(AppDbContext appDbContext):EntityRepositoryBase
         return base.Get(predicate, queryOptions);
     }
 
-    public ValueTask<Booking> GetById(Guid bookingId, QueryOptions queryOptions = default, CancellationToken cancellationToken = default)
+    public ValueTask<Booking?> GetById(Guid bookingId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default)
     {
         return base.GetByIdAsync(bookingId, queryOptions, cancellationToken);
     }

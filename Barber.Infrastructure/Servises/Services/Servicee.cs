@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using System.Net;
+using Barber.Api.Extentions;
 using Barber.Application.Servises.Models;
 using Barber.Application.Servises.Sarvices;
 using Barber.Domain.Common.Commands;
@@ -7,10 +9,12 @@ using Barber.Domain.Entities;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Barber.Infrastructure.Servises.Services;
 
-public class Servicee(IServiceRepository serviceRepository) : IService
+public class Servicee(IServiceRepository serviceRepository ,IWebHostEnvironment webHostEnvironment) : IService
 {
     public IQueryable<Service> Get(Expression<Func<Service, bool>>? predicate = default,
         QueryOptions queryOptions = default)
@@ -29,16 +33,39 @@ public class Servicee(IServiceRepository serviceRepository) : IService
         return serviceRepository.GetByIdAsync(userId, queryOptions, cancellationToken);
     }
 
-    public ValueTask<Service> CreateAsync(Service service, CommandOptions commandOptions = default,
+    public async ValueTask<Service> CreateAsync(ServiceCreate service, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        return serviceRepository.CreateAsync(service, commandOptions, cancellationToken);
+        
+        var extention = new MethodExtention(webHostEnvironment);
+        var picturepa = await extention.AddPictureAndGetPath(service.ImageUrl);
+        var newservice = new Service
+        {
+            BarberId = service.BarberId,
+            Name = service.Name,
+            Duration = service.Duration,
+            CreatedTime = DateTimeOffset.UtcNow,
+            ImagerUrl = picturepa
+        };
+        
+        return await serviceRepository.CreateAsync(newservice, commandOptions, cancellationToken);
     }
 
-    public ValueTask<Service> UpdateAsync(Service service, CommandOptions commandOptions = default,
+    public async ValueTask<Service> UpdateAsync(ServiceUpdate service, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        return serviceRepository.UpdateAsync(service, commandOptions, cancellationToken);
+        var extention = new MethodExtention(webHostEnvironment);
+        var picturepa = await extention.AddPictureAndGetPath(service.ImageUrl);
+        var newservice = new Service
+        {
+            Id = service.Id,
+            BarberId = service.BarberId,
+            Name = service.Name,
+            Duration = service.Duration,
+            CreatedTime = DateTimeOffset.UtcNow,
+            ImagerUrl = picturepa
+        };
+        return await serviceRepository.UpdateAsync(newservice, commandOptions, cancellationToken);
     }
 
     public ValueTask<Service?> DeleteByIdAsync(Guid serviceId, CommandOptions commandOptions = default,

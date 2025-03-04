@@ -1,6 +1,7 @@
-﻿using Barber.Domain.Common.Queries;
+﻿using Barber.Application.Users.Models;
+using Barber.Domain.Common.Queries;
 
-namespace Barber.Application.Users.Models;
+namespace Barber.Application.Barbers.Madels;
 
 public class BarberFilter:FilterPagination
 {

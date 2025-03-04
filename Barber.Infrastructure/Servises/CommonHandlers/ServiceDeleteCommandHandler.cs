@@ -1,4 +1,4 @@
-﻿using Barber.Application.Servises.Common;
+﻿using Barber.Application.Servises.Commonds;
 using Barber.Application.Servises.Sarvices;
 using Barber.Domain.Common.Commands;
 

@@ -22,7 +22,7 @@ public class ReviewService(AppDbContext appDbContext,IValidator<Review> validato
         {
             throw new ValidationException(validationResult.Errors);
         }
-
+        reviewDto.CreatedTime = DateTimeOffset.UtcNow;
         var result = await appDbContext.Reviews.AddAsync(reviewDto);
         await appDbContext.SaveChangesAsync();
         return reviewDto;

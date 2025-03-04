@@ -1,5 +1,5 @@
 ﻿using Barber.Application.Barbers.Commands;
-using Barber.Application.Servises.Common;
+using Barber.Application.Servises.Commonds;
 using Barber.Application.Servises.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +26,7 @@ public class ServiceController (IMediator mediator): Controller
     }
 
     [HttpPost]
-    public async ValueTask<IActionResult> Post([FromBody] ServiceCreateCommand? serviceCreate,
+    public async ValueTask<IActionResult> Post([FromForm] ServiceCreateCommand? serviceCreate,
         CancellationToken cancellationToken)
     {
         if (serviceCreate == null)
@@ -40,7 +40,7 @@ public class ServiceController (IMediator mediator): Controller
 
 
     [HttpPut]
-    public async ValueTask<IActionResult> Update([FromBody] ServiceUpdateCommand command,
+    public async ValueTask<IActionResult> Update([FromForm] ServiceUpdateCommand command,
         CancellationToken cancellationToken)
     {
         var result = await mediator.Send(command, cancellationToken);

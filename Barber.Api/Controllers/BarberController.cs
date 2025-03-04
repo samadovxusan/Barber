@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Barber.Api.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 [Route("api/[controller]")]
 public class BarberController(IMediator mediator) : ControllerBase
 {
@@ -31,7 +31,7 @@ public class BarberController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async ValueTask<IActionResult> Post([FromBody] CreateBerberCommand? userCreate,
+    public async ValueTask<IActionResult> Post([FromForm] CreateBerberCommand? userCreate,
         CancellationToken cancellationToken)
     {
         if (userCreate == null)
@@ -45,7 +45,7 @@ public class BarberController(IMediator mediator) : ControllerBase
 
 
     [HttpPut]
-    public async ValueTask<IActionResult> Update([FromBody] UpdateBarberCommand command,
+    public async ValueTask<IActionResult> Update([FromForm] UpdateBarberCommand command,
         CancellationToken cancellationToken)
     {
         var result = await mediator.Send(command, cancellationToken);

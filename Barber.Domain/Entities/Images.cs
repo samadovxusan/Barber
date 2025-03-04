@@ -7,4 +7,5 @@ public class Images
     public Guid Id { get; set; } = new Guid();
     public Guid BarberId { get; set; }
     public string? ImagePath { get; set; }
+    public Barber Barber { get; set; } = default!;
 }

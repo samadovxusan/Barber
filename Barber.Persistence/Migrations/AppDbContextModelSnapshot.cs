@@ -43,6 +43,10 @@ namespace Barber.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset?>("ModifiedTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -56,7 +60,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Barbers", (string)null);
+                    b.ToTable("Barbers");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Booking", b =>
@@ -95,7 +99,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings", (string)null);
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Images", b =>
@@ -108,11 +112,14 @@ namespace Barber.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ImagePath")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Imageses", (string)null);
+                    b.HasIndex("BarberId");
+
+                    b.ToTable("Imageses");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Review", b =>
@@ -146,7 +153,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Service", b =>
@@ -164,6 +171,10 @@ namespace Barber.Persistence.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("interval");
 
+                    b.Property<string>("ImagerUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset?>("ModifiedTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -178,7 +189,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasIndex("BarberId");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.User", b =>
@@ -211,7 +222,7 @@ namespace Barber.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Booking", b =>
@@ -239,6 +250,17 @@ namespace Barber.Persistence.Migrations
                     b.Navigation("Service");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Barber.Domain.Entities.Images", b =>
+                {
+                    b.HasOne("Barber.Domain.Entities.Barber", "Barber")
+                        .WithMany("Images")
+                        .HasForeignKey("BarberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Barber");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.Review", b =>
@@ -274,6 +296,8 @@ namespace Barber.Persistence.Migrations
             modelBuilder.Entity("Barber.Domain.Entities.Barber", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.User", b =>
