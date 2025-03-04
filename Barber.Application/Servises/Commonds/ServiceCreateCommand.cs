@@ -9,6 +9,7 @@ public record ServiceCreateCommand:ICommand<bool>
     public string Name { get; set; } = default!;
     public decimal Price { get; set; }
     public TimeSpan Duration { get; set; }
+    public IFormFile ImageUrl { get; set; } = default!; 
     
     public Guid BarberId { get; set; }
     

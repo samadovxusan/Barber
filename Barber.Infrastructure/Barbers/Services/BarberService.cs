@@ -17,7 +17,7 @@ using Xunarmand.Domain.Enums;
 
 namespace Barber.Infrastructure.Barbers.Services;
 
-public class BarberService(IBarberRepository barberService, IValidator<BarberCreate> validator,AppDbContext context, IMapper mapper)
+public class BarberService(IWebHostEnvironment webHostEnvironment, IBarberRepository barberService, IValidator<BarberCreate> validator,AppDbContext context, IMapper mapper)
     : IBarberService
 {
     public IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
@@ -50,7 +50,11 @@ public class BarberService(IBarberRepository barberService, IValidator<BarberCre
 
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
-
+        
+        var extention = new MethodExtention(webHostEnvironment);
+        var imageUrl = await extention.AddPictureAndGetPath(product.ImageUrl);
+        
+        
         var barber = mapper.Map<Domain.Entities.Barber>(product);
         barber.ImageUrl = imageUrl;
         
