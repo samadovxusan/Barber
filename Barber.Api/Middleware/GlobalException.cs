@@ -5,7 +5,7 @@ namespace Barber.Api.Middleware;
 
 public class GlobalException
 {
-     private readonly RequestDelegate _next;
+    private readonly RequestDelegate _next;
     private readonly ILogger<GlobalException> _logger;
 
     public GlobalException(RequestDelegate next, ILogger<GlobalException> logger)
