@@ -1,4 +1,5 @@
-﻿using Barber.Domain.Common.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Barber.Domain.Common.Entities;
 using Barber.Domain.Enums;
 
 namespace Barber.Domain.Entities;
@@ -11,6 +12,7 @@ public class Booking:AuditableEntity
     public User? User { get; set; }
     public Guid BarberId { get; set; }
     public Barber? Barber { get; set; }
-    public Guid ServiceId { get; set; }
-    public Service? Service { get; set; }
+    public string ServiceId { get; set; } = string.Empty;
+    [NotMapped]
+    public Guid[] ServiceIdsArray { get; set; } = Array.Empty<Guid>();
 }

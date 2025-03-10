@@ -12,7 +12,7 @@ public class BookingCreateCommandHandler(IBookingService service) : ICommandHand
         var newbooking = new Domain.Entities.Booking
         {
             BarberId = request.BarberId,
-            ServiceId = request.ServiceId,
+            ServiceId = string.Join(",",request.ServiceId),
             UserId = request.UserId,
             Status = Status.Pending,
             AppointmentTime = request.AppointmentTime,

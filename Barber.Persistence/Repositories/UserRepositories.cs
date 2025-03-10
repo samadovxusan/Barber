@@ -3,6 +3,7 @@ using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
 using Barber.Persistence.DataContexts;
+using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
 
 namespace Barber.Persistence.Repositories;
@@ -24,6 +25,8 @@ public class UserRepositories(AppDbContext appContext)
     public ValueTask<User> CreateAsync(User user, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
+        var paswordhash = PasswordHelper.HashPassword(user.Password);
+        user.Password = paswordhash;
         return base.CreateAsync(user, commandOptions, cancellationToken);
     }
 

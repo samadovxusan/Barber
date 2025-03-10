@@ -59,6 +59,7 @@ public class BarberService(IWebHostEnvironment webHostEnvironment, IBarberReposi
         barber.ImageUrl = imageUrl;
         
         barber.CreatedTime = DateTimeOffset.UtcNow;
+        barber.Password = PasswordHelper.HashPassword(barber.Password);
         return await barberService.CreateAsync(barber, cancellationToken: cancellationToken);
     }
 
@@ -77,6 +78,7 @@ public class BarberService(IWebHostEnvironment webHostEnvironment, IBarberReposi
         
         var newbarber = mapper.Map<Domain.Entities.Barber>(barberid);
         newbarber.ModifiedTime = DateTimeOffset.UtcNow;
+        newbarber.Password = PasswordHelper.HashPassword(newbarber.Password);
 
         var result = await barberService.UpdateAsync(newbarber, cancellationToken: cancellationToken);
         return result;

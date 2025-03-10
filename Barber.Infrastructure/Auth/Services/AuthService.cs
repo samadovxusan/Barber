@@ -5,6 +5,7 @@ using Barber.Application.Users.Models;
 using Barber.Application.Users.Services;
 using Barber.Domain.Entities;
 using Barber.Persistence.DataContexts;
+using Barber.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -22,6 +23,8 @@ public class AuthService(AppDbContext dbContext,IUserService service,  IMapper m
             {
                 throw new InvalidOperationException("This number or name has already been registered.");
             }
+
+            user.Password = PasswordHelper.HashPassword(user.Password);
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync(); 
             return true;
@@ -35,8 +38,8 @@ public class AuthService(AppDbContext dbContext,IUserService service,  IMapper m
     public async ValueTask<LoginDto> Login(Login login)
     {
         var token = new LoginDto();
-        var newUser = await dbContext.Users.FirstOrDefaultAsync(x => x.Password == login.Password && x.PhoneNumber == login.PhoneNumber);
-        if(newUser == null)
+        var newUser = await dbContext.Users.FirstOrDefaultAsync(x => x.PhoneNumber == login.PhoneNumber);
+        if(!PasswordHelper.VerifyPassword(newUser.Password , login.Password))
         {
             token.Success = false;
             return token;

@@ -46,6 +46,7 @@ public class UserService(IUserRepository userRepository, IValidator<User> valida
         foundClient.Password = user.Password;
         foundClient.PhoneNumber = user.PhoneNumber;
         foundClient.CreatedTime = DateTimeOffset.UtcNow;
+        foundClient.Password = PasswordHelper.HashPassword(foundClient.Password);
 
         return await userRepository.UpdateAsync(foundClient, commandOptions, cancellationToken);
     }
