@@ -1,4 +1,5 @@
 ﻿using Barber.Application.Barbers.Commands;
+using Barber.Application.Barbers.Services;
 using Barber.Application.Servises.Commonds;
 using Barber.Application.Servises.Queries;
 using MediatR;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Barber.Api.Controllers;
 [Controller]
 [Route("api/[controller]")]
-public class ServiceController (IMediator mediator): Controller
+public class ServiceController (IMediator mediator, IBarberService service): Controller
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] ServiceGetQuery serviceGetQuery,
@@ -19,11 +20,16 @@ public class ServiceController (IMediator mediator): Controller
     }
 
     [HttpGet("{serviceId:guid}")]
-    public async ValueTask<IActionResult> GetById( Guid serviceId, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> GetById([FromRoute]Guid serviceId, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetByIdQuery() { Id = serviceId }, cancellationToken);
         return Ok(result);
     }
+    
+    [HttpGet($"by-barber{{barberId:guid}}")]
+    public async ValueTask<IActionResult> Get(Guid barberId)
+        => Ok(await service.GetByIdAsync(barberId));
+    
 
     [HttpPost]
     public async ValueTask<IActionResult> Post([FromForm] ServiceCreateCommand? serviceCreate,

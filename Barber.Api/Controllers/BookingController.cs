@@ -1,4 +1,5 @@
 ﻿using Barber.Api.Hubs;
+using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Commonds;
 using Barber.Application.Booking.Queries;
 using Barber.Persistence.DataContexts;
@@ -14,11 +15,13 @@ public class BookingController
 {
     private readonly IHubContext<BookingHub> _hubContext;
     private readonly IMediator _mediator;
+    private readonly IBarberService _service;
 
-    public BookingController(IHubContext<BookingHub> hubContext,IMediator mediator)
+    public BookingController(IHubContext<BookingHub> hubContext,IMediator mediator,IBarberService service)
     {
             _hubContext = hubContext;
             _mediator = mediator;
+            _service = service;
     }
     
     [HttpGet]
@@ -29,10 +32,15 @@ public class BookingController
         return Ok(result);
     }
 
-    [HttpGet("{clientId:guid}")]
-    public async ValueTask<IActionResult> GetById([FromRoute] Guid clientId, CancellationToken cancellationToken)
+    [HttpGet($"by-barber{{barberId:guid}}")]
+    public async ValueTask<IActionResult> Get(Guid barberId)
+        => Ok(await _service.GetByIdAsync(barberId));
+    
+
+    [HttpGet("{bookingId:guid}")]
+    public async ValueTask<IActionResult> GetById([FromRoute] Guid bookingId, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetByIdBookingQuery() { Id = clientId }, cancellationToken);
+        var result = await _mediator.Send(new GetByIdBookingQuery() { Id = bookingId }, cancellationToken);
         return Ok(result);
     }
 
@@ -65,10 +73,10 @@ public class BookingController
         return Ok(result);
     }
 
-    [HttpDelete("{clientId:guid}")]
-    public async ValueTask<IActionResult> DeleteById([FromRoute] Guid clientId, CancellationToken cancellationToken)
+    [HttpDelete("{bookingId:guid}")]
+    public async ValueTask<IActionResult> DeleteById([FromRoute] Guid bookingId, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new BookingDeleteCommand() { Id = clientId }, cancellationToken);
+        var result = await _mediator.Send(new BookingDeleteCommand() { Id = bookingId }, cancellationToken);
         return result ? Ok() : BadRequest();
     }
 }
