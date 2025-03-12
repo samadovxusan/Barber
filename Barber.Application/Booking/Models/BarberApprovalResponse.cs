@@ -2,5 +2,6 @@
 
 public class BarberApprovalResponse
 {
-    
+    public Guid BookingId { get; set; }
+    public bool IsApproved { get; set; }
 }

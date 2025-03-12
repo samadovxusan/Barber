@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Barber.Application.Booking.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
@@ -19,6 +20,11 @@ public interface IBookingRepositoriess
     ValueTask<Booking> Update(Booking? booking, CancellationToken cancellationToken = default,
         CommandOptions commandOptions = default);
 
-    ValueTask<Booking> Delete(Guid bokingId, CommandOptions commandOptions,
+    ValueTask<Booking?> Delete(Guid bokingId, CommandOptions commandOptions,
         CancellationToken cancellationToken = default);
+    
+    ValueTask<Boolean> RequestApprovalAsync(BarberApprovalRequested request,
+        CommandOptions commandOptions = default,
+        CancellationToken cancellationToken = default);
+
 }

@@ -46,7 +46,7 @@ public class BookingController
     }
 
     [HttpPost]
-    public async ValueTask<IActionResult> Post([FromBody] BookingCreateCommand? userCreate,  
+    public async ValueTask<IActionResult> Post( BookingCreateCommand? userCreate,  
         CancellationToken cancellationToken)  
     {  
         if (userCreate == null)  

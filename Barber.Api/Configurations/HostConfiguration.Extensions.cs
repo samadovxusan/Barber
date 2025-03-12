@@ -89,6 +89,9 @@ public static partial class HostConfiguration
         // Review
 
         builder.Services.AddScoped<IReviewService, ReviewService>();
+        builder.Services.AddScoped<TimeScheduleGenerator>();
+        builder.Services.AddHttpClient();
+
 
 
         #region JWT Bearer

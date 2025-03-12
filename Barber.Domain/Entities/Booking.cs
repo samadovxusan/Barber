@@ -6,7 +6,7 @@ namespace Barber.Domain.Entities;
 
 public class Booking:AuditableEntity
 {
-    public DateTime AppointmentTime { get; set; }
+    public TimeSpan AppointmentTime { get; set; }
     public Status Status { get; set; } = Enums.Status.Pending;
     public Guid UserId { get; set; }
     public User? User { get; set; }
