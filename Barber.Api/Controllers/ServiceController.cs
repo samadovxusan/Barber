@@ -2,13 +2,14 @@
 using Barber.Application.Barbers.Services;
 using Barber.Application.Servises.Commonds;
 using Barber.Application.Servises.Queries;
+using Barber.Application.Servises.Sarvices;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Barber.Api.Controllers;
 [Controller]
 [Route("api/[controller]")]
-public class ServiceController (IMediator mediator, IBarberService service): Controller
+public class ServiceController (IMediator mediator, IService service): Controller
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] ServiceGetQuery serviceGetQuery,
@@ -28,7 +29,7 @@ public class ServiceController (IMediator mediator, IBarberService service): Con
     
     [HttpGet($"by-barber{{barberId:guid}}")]
     public async ValueTask<IActionResult> Get(Guid barberId)
-        => Ok(await service.GetByIdAsync(barberId));
+        => Ok(await service.GetByIdBarberServiceAsync(barberId));
     
 
     [HttpPost]

@@ -2,6 +2,7 @@
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Commonds;
 using Barber.Application.Booking.Queries;
+using Barber.Application.Booking.Service;
 using Barber.Persistence.DataContexts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,9 @@ public class BookingController
 {
     private readonly IHubContext<BookingHub> _hubContext;
     private readonly IMediator _mediator;
-    private readonly IBarberService _service;
+    private readonly IBookingService _service;
 
-    public BookingController(IHubContext<BookingHub> hubContext,IMediator mediator,IBarberService service)
+    public BookingController(IHubContext<BookingHub> hubContext,IMediator mediator,IBookingService service)
     {
             _hubContext = hubContext;
             _mediator = mediator;
@@ -34,7 +35,7 @@ public class BookingController
 
     [HttpGet($"by-barber{{barberId:guid}}")]
     public async ValueTask<IActionResult> Get(Guid barberId)
-        => Ok(await _service.GetByIdAsync(barberId));
+        => Ok(await _service.GetByIdBarberAsync(barberId));
     
 
     [HttpGet("{bookingId:guid}")]

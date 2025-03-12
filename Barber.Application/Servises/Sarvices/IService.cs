@@ -16,6 +16,9 @@ public interface IService
     ValueTask<Service?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
 
+    ValueTask<List<Service>> GetByIdBarberServiceAsync(Guid userId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default);
+    
     ValueTask<Service> CreateAsync(ServiceCreate service, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
 

@@ -5,6 +5,7 @@ using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Infrastructure.Booking.Services;
 
@@ -24,6 +25,13 @@ public class BookingService(IBookingRepositoriess repositoriess):IBookingService
         CancellationToken cancellationToken = default)
     {
         return repositoriess.GetById(bookingId, queryOptions, cancellationToken);
+    }
+
+    public async ValueTask<List<Domain.Entities.Booking>?> GetByIdBarberAsync(Guid bookingId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        var barberBooking = await repositoriess.Get(x => x.BarberId == bookingId).ToListAsync(cancellationToken: cancellationToken);
+        return barberBooking;
     }
 
     public ValueTask<Domain.Entities.Booking> CreateAsync(Domain.Entities.Booking booking, CommandOptions commandOptions = default,

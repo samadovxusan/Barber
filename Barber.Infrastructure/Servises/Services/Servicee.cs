@@ -11,6 +11,7 @@ using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Infrastructure.Servises.Services;
 
@@ -33,6 +34,14 @@ public class Servicee(IServiceRepository serviceRepository ,IWebHostEnvironment 
         return serviceRepository.GetByIdAsync(userId, queryOptions, cancellationToken);
     }
 
+    public async ValueTask<List<Service>> GetByIdBarberServiceAsync(Guid barberId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        var barberService = await serviceRepository.Get(x => x.BarberId == barberId).ToListAsync(cancellationToken: cancellationToken);
+        return barberService;
+
+    }
+
     public async ValueTask<Service> CreateAsync(ServiceCreate service, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
@@ -44,6 +53,7 @@ public class Servicee(IServiceRepository serviceRepository ,IWebHostEnvironment 
             BarberId = service.BarberId,
             Name = service.Name,
             Duration = service.Duration,
+            Price = service.Price,
             CreatedTime = DateTimeOffset.UtcNow,
             ImagerUrl = picturepa
         };
@@ -62,6 +72,7 @@ public class Servicee(IServiceRepository serviceRepository ,IWebHostEnvironment 
             BarberId = service.BarberId,
             Name = service.Name,
             Duration = service.Duration,
+            Price = service.Price,
             CreatedTime = DateTimeOffset.UtcNow,
             ImagerUrl = picturepa
         };
