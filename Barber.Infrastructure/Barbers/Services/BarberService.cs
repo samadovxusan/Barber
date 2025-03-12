@@ -17,30 +17,36 @@ using Xunarmand.Domain.Enums;
 
 namespace Barber.Infrastructure.Barbers.Services;
 
-public class BarberService(IWebHostEnvironment webHostEnvironment, IBarberRepository barberService, IValidator<BarberCreate> validator,AppDbContext context, IMapper mapper)
+public class BarberService(
+    IWebHostEnvironment webHostEnvironment,
+    IBarberRepository barberService,
+    IValidator<BarberCreate> validator,
+    AppDbContext context,
+    IMapper mapper)
     : IBarberService
 {
     public IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default,
         QueryOptions queryOptions = default)
     {
-        return barberService.Get(predicate,queryOptions);
+        return barberService.Get(predicate, queryOptions);
     }
 
     public IQueryable<Domain.Entities.Barber> Get(BarberFilter productFilter, QueryOptions queryOptions = default)
     {
-        return barberService.Get(queryOptions:queryOptions).ApplyPagination(productFilter);
+        return barberService.Get(queryOptions: queryOptions).ApplyPagination(productFilter);
     }
 
-    public async ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid id, QueryOptions options, CancellationToken cancellationToken)
+    public async ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid id, QueryOptions options,
+        CancellationToken cancellationToken)
     {
         return await context.Barbers
             .Include(b => b.Bookings) // Booking'larni qo'shish
-            .Include(b=>b.Images)
+            .Include(b => b.Images)
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 
 
-    public  async ValueTask<Domain.Entities.Barber> CreateAsync(BarberCreate product,
+    public async ValueTask<Domain.Entities.Barber> CreateAsync(BarberCreate product,
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
@@ -50,17 +56,51 @@ public class BarberService(IWebHostEnvironment webHostEnvironment, IBarberReposi
 
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
-        
+
         var extention = new MethodExtention(webHostEnvironment);
         var imageUrl = await extention.AddPictureAndGetPath(product.ImageUrl);
-        
-        
+
+
         var barber = mapper.Map<Domain.Entities.Barber>(product);
         barber.ImageUrl = imageUrl;
-        
+
         barber.CreatedTime = DateTimeOffset.UtcNow;
         barber.Password = PasswordHelper.HashPassword(barber.Password);
         return await barberService.CreateAsync(barber, cancellationToken: cancellationToken);
+    }
+
+    public async ValueTask SetDailyScheduleAsync(BarberDailySchedule barberWokingTime,
+        CommandOptions commandOptions = default, CancellationToken cancellationToken = default)
+    {
+        if (barberWokingTime.StartTime >= barberWokingTime.EndTime)
+            throw new Exception("Boshlanish vaqti tugash vaqtidan oldin bo‘lishi kerak!");
+
+        var existingSchedule =
+            await context.BarberDailySchedules.FirstOrDefaultAsync(b => b.BarberId == barberWokingTime.BarberId,
+                cancellationToken: cancellationToken);
+
+        if (existingSchedule != null)
+        {
+            // Agar bor bo‘lsa, yangilaymiz
+            existingSchedule.StartTime = barberWokingTime.StartTime;
+            existingSchedule.EndTime = barberWokingTime.EndTime;
+            existingSchedule.IsWorking = true;
+        }
+        else
+        {
+            // Agar yo‘q bo‘lsa, yangi jadval yaratamiz
+            var schedule = new BarberDailySchedule
+            {
+                BarberId = barberWokingTime.BarberId,
+                StartTime = barberWokingTime.StartTime,
+                EndTime = barberWokingTime.EndTime,
+                IsWorking = true
+            };
+            schedule.CreatedTime = DateTime.UtcNow;
+            await context.BarberDailySchedules.AddAsync(schedule, cancellationToken);
+        }
+
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async ValueTask<Domain.Entities.Barber> UpdateAsync(BarberDto product,
@@ -70,18 +110,42 @@ public class BarberService(IWebHostEnvironment webHostEnvironment, IBarberReposi
         var barberid = await barberService.GetByIdAsync(product.Id, cancellationToken: cancellationToken);
         if (barberid is null)
             throw new ValidationException("Barber not found");
-        
+
         var extention = new MethodExtention(webHostEnvironment);
-        var imageUrl =  await extention.AddPictureAndGetPath(product.ImagetUrl);
+        var imageUrl = await extention.AddPictureAndGetPath(product.ImagetUrl);
         var barber = mapper.Map<Domain.Entities.Barber>(product);
         barber.ImageUrl = imageUrl;
-        
+
         var newbarber = mapper.Map<Domain.Entities.Barber>(barberid);
         newbarber.ModifiedTime = DateTimeOffset.UtcNow;
         newbarber.Password = PasswordHelper.HashPassword(newbarber.Password);
 
         var result = await barberService.UpdateAsync(newbarber, cancellationToken: cancellationToken);
         return result;
+    }
+
+    public async ValueTask GenerateDailyScheduleAsync()
+    {
+        var today = DateTime.UtcNow.Date;
+
+        var dailySchedules = await context.BarberDailySchedules
+            .Where(b => b.IsWorking)
+            .ToListAsync();
+
+        foreach (var schedule in dailySchedules)
+        {
+            var barberSchedule = new BarberDailySchedule()
+            {
+                BarberId = schedule.BarberId,
+                StartTime = schedule.StartTime,
+                EndTime = schedule.EndTime,
+                IsWorking = true
+            };
+
+            await context.BarberDailySchedules.AddAsync(barberSchedule);
+        }
+
+        await context.SaveChangesAsync();
     }
 
     public ValueTask<Domain.Entities.Barber?> DeleteByIdAsync(Guid productId, CommandOptions commandOptions = default,

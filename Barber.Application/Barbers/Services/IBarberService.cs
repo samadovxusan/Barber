@@ -3,6 +3,7 @@ using Barber.Application.Barbers.Madels;
 using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
+using Barber.Domain.Entities;
 
 namespace Barber.Application.Barbers.Services;
 
@@ -19,10 +20,16 @@ public interface IBarberService
     ValueTask<Domain.Entities.Barber> CreateAsync(BarberCreate product,
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
+    
+    ValueTask SetDailyScheduleAsync( BarberDailySchedule barberDailySchedule,
+        CommandOptions commandOptions = default,
+        CancellationToken cancellationToken = default);
 
     ValueTask<Domain.Entities.Barber> UpdateAsync(BarberDto product,
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
+
+    ValueTask GenerateDailyScheduleAsync();
 
     ValueTask<Domain.Entities.Barber?> DeleteByIdAsync(Guid productId, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);

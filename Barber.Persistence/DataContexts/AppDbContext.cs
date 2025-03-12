@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using Barber.Domain.Entities;
+using Barber.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Persistence.DataContexts;
@@ -17,6 +18,7 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<BarberDailySchedule> BarberDailySchedules { get; set; }
     public DbSet<Domain.Entities.Barber> Barbers { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<Booking> Bookings { get; set; }

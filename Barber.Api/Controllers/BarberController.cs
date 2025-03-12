@@ -43,6 +43,12 @@ public class BarberController(IMediator mediator) : ControllerBase
         return result ? Ok(result) : NoContent();
     }
 
+    [HttpPost("CreateWorkingTime")]
+    public async ValueTask<IActionResult> Post(CreateBarberWorkingTimeCommand workingTimeCommand)
+    {
+        var result = await mediator.Send(workingTimeCommand);
+        return result ? Ok(result) : NoContent();
+    }
 
     [HttpPut]
     public async ValueTask<IActionResult> Update([FromForm] UpdateBarberCommand command,

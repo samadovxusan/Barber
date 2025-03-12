@@ -12,4 +12,5 @@ public class Barber : AuditableEntity
     public string ImageUrl { get; set; } = string.Empty;
     public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
     public ICollection<Images> Images { get; set; } = new List<Images>();
+    public ICollection<BarberDailySchedule> BarberWorkingTime { get; set; } = new List<BarberDailySchedule>();
 }
