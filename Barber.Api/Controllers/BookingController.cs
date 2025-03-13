@@ -58,9 +58,8 @@ public class BookingController
 
         if (result)  
         {  
-            string message = $"{userCreate.UserId} {userCreate.AppointmentTime} joy band qildi!";  
-        
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", message, cancellationToken: cancellationToken);  
+            string message = $" {userCreate.BarberId} {userCreate.UserId} {userCreate.AppointmentTime} {userCreate.ServiceId} joy band qilmoqchi!";  
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", message, cancellationToken: cancellationToken);
         }  
 
         return result ? Ok(result) : NoContent();  

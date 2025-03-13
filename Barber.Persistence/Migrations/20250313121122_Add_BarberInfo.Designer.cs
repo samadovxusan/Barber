@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Barber.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250312185748_Add_BookingTime")]
-    partial class Add_BookingTime
+    [Migration("20250313121122_Add_BarberInfo")]
+    partial class Add_BarberInfo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,6 +1,7 @@
 ﻿using Barber.Application.Barbers.Commands;
 using Barber.Application.Barbers.Madels;
 using Barber.Application.Barbers.Queries;
+using Barber.Application.Barbers.Services;
 using Barber.Application.Users.Commands;
 using Barber.Domain.Common.Queries;
 using MediatR;
@@ -13,7 +14,7 @@ namespace Barber.Api.Controllers;
 [ApiController]
 // [Authorize]
 [Route("api/[controller]")]
-public class BarberController(IMediator mediator) : ControllerBase
+public class BarberController(IMediator mediator , IBarberService service) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] BarberGetAllQuary barberGetQuery,
@@ -23,10 +24,28 @@ public class BarberController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{clientId:guid}")]
-    public async ValueTask<IActionResult> GetById([FromRoute] Guid clientId, CancellationToken cancellationToken)
+    [HttpGet("BarberInfo")]
+    public async Task<IActionResult> Get(Guid barberId,
+        CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new BarberGetByIdQuery() { Id = clientId }, cancellationToken);
+        try
+        {
+            var result = await service.GetBarberInfoAsync(barberId, cancellationToken: cancellationToken);
+            return Ok(result);
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Barber Topilmadi");
+        }
+      
+    }
+
+    [HttpGet("{barberId:guid}")]
+    public async ValueTask<IActionResult> GetById([FromRoute] Guid barberId, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new BarberGetByIdQuery() { Id = barberId }, cancellationToken);
         return Ok(result);
     }
 
@@ -58,10 +77,10 @@ public class BarberController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete("{clientId:guid}")]
-    public async ValueTask<IActionResult> DeleteById([FromRoute] Guid clientId, CancellationToken cancellationToken)
+    [HttpDelete("{barberId:guid}")]
+    public async ValueTask<IActionResult> DeleteById([FromRoute] Guid barberId, CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new DeleteBarberCommand() { BarberId = clientId }, cancellationToken);
+        var result = await mediator.Send(new DeleteBarberCommand() { BarberId = barberId }, cancellationToken);
         return result ? Ok() : BadRequest();
     }
 }

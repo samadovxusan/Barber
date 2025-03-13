@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Barber.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_BookingTime : Migration
+    public partial class Add_BarberInfo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

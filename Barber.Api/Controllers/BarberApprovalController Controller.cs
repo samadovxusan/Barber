@@ -1,46 +1,46 @@
-﻿using Barber.Application.Booking.Models;
+﻿using Barber.Api.Hubs;
+using Barber.Application.Booking.Models;
+using Barber.Application.Booking.Service;
+using Barber.Domain.Entities;
 using Barber.Domain.Enums;
 using Barber.Persistence.DataContexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Barber.Api.Controllers;
 
 [ApiController]
 [Route("api/barber")]
-public class BarberApprovalController : ControllerBase
+public class BarberApprovalController(AppDbContext context,IHubContext<BookingHub> hubContext, IBookingService bookingService) : ControllerBase
 {
-    private readonly AppDbContext _context;
-
-    public BarberApprovalController(AppDbContext context)
-    {
-        _context = context;
-    }
-
     [HttpPost("approve")]
     public async Task<IActionResult> ApproveBooking([FromBody] BarberApprovalRequested request)
-    {
-        var booking = await _context.Bookings.FindAsync(request.BookingId);
-
-        if (booking == null)
-            return NotFound("Booking topilmadi");
-
-        booking.Status = Status.Confirmed;
-        await _context.SaveChangesAsync();
-
-        return Ok(new { IsApproved = true });
-    }
-
-    [HttpPost("reject")]
-    public async Task<IActionResult> RejectBooking([FromBody] BarberApprovalRequested request)
-    {
-        var booking = await _context.Bookings.FindAsync(request.BookingId);
-
-        if (booking == null)
-            return NotFound("Booking topilmadi");
-
-        booking.Status = Status.Confirmed;
-        await _context.SaveChangesAsync();
-
-        return Ok(new { IsApproved = false });
+        {
+        try
+        {
+            if (request.Conformetion)
+            {
+                var newbooking = new Booking
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = request.UserId,
+                    BarberId = request.BarberId,
+                    ServiceId = request.ServiceId,
+                    Status = Status.Confirmed,
+                    CreatedTime = DateTimeOffset.UtcNow
+                };
+                await context.Bookings.AddAsync(newbooking);
+                await context.SaveChangesAsync();
+                string message = $"{newbooking.UserId} {newbooking.AppointmentTime} {newbooking.ServiceId} joy band qilindi!";  
+                await hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+                return Ok(true);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        return Ok(false);
     }
 }

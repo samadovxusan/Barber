@@ -45,6 +45,23 @@ public class BarberService(
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 
+    public async ValueTask<BarberInfo> GetBarberInfoAsync(Guid barberId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var barber =
+                await context.Barbers.FirstOrDefaultAsync(b => b.Id == barberId, cancellationToken: cancellationToken);
+            var result = mapper.Map<BarberInfo>(barber);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
 
     public async ValueTask<Domain.Entities.Barber> CreateAsync(BarberCreate product,
         CommandOptions commandOptions = default,

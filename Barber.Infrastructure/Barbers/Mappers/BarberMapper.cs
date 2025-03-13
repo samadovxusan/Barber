@@ -11,6 +11,7 @@ public class BarberMapper:Profile
         CreateMap<Domain.Entities.Barber,BarberDto>().ReverseMap();
         CreateMap<Domain.Entities.Barber,BarberCreate>().ReverseMap();
         CreateMap<BarberDailySchedule,BarberWokingTime>().ReverseMap();
+        CreateMap<Domain.Entities.Barber,BarberInfo>().ReverseMap();
     }
     
 }

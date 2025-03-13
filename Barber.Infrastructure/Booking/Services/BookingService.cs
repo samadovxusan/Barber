@@ -44,61 +44,46 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        booking.CreatedTime = DateTimeOffset.UtcNow;
-
-        var barberSchedule = await _context.BarberDailySchedules
-            .FirstOrDefaultAsync(b => b.BarberId == booking.BarberId
-                                      && b.StartTime <= booking.AppointmentTime
-                                      && b.EndTime >= booking.AppointmentTime, cancellationToken: cancellationToken);
-
-        if (barberSchedule == null)
-            throw new Exception("Barber bu vaqtda ishlamaydi.");
-
-        var existingBooking = await _context.Bookings
-            .FirstOrDefaultAsync(b => b.BarberId == booking.BarberId
-                                      && b.AppointmentTime == booking.AppointmentTime, cancellationToken: cancellationToken);
-
-        if (existingBooking != null)
-            throw new Exception("Ushbu vaqt allaqachon band qilingan.");
-
-        // 1. Booking vaqtincha saqlanadi
-        booking.Status = Status.Pending;
-        _context.Bookings.Add(booking);
-        await _context.SaveChangesAsync();
-
-        // 2. Barberga API orqali ruxsat so‘rash
-        var approvalRequest = new BarberApprovalRequested
+        try
         {
-            BarberId = booking.BarberId,
-            BookingId = booking.Id,
-            AppointmentTime = booking.AppointmentTime
-        };
+            booking.CreatedTime = DateTimeOffset.UtcNow;
 
-        var isApproved = await repositoriess.RequestApprovalAsync(approvalRequest, cancellationToken: cancellationToken);
+            var barberSchedule = await _context.BarberDailySchedules
+                .FirstOrDefaultAsync(b => b.BarberId == booking.BarberId
+                                          && b.StartTime <= booking.AppointmentTime
+                                          && b.EndTime >= booking.AppointmentTime, cancellationToken: cancellationToken);
 
-        if (!isApproved)
+            if (barberSchedule == null)
+                throw new Exception("Barber bu vaqtda ishlamaydi.");
+
+            var existingBooking = await _context.Bookings
+                .FirstOrDefaultAsync(b => b.BarberId == booking.BarberId
+                                          && b.AppointmentTime == booking.AppointmentTime, cancellationToken: cancellationToken);
+
+            if (existingBooking != null)
+                throw new Exception("Ushbu vaqt allaqachon band qilingan.");
+            
+            return true;
+
+        }
+        catch (Exception e)
         {
-            booking.Status = Status.Confirmed;
-            await _context.SaveChangesAsync(cancellationToken);
+            Console.WriteLine(e);
             return false;
         }
-
-        booking.Status = Status.Confirmed;
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
     }
 
     public async ValueTask<bool> RequestApprovalAsync(BarberApprovalRequested request, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("https://localhost:5000/api/barber/approve", request);
+        var response = await _httpClient.PostAsJsonAsync("https://95.47.238.221:3034/api/barber/approve", request, cancellationToken: cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
             return false;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<BarberApprovalResponse>();
+        var result = await response.Content.ReadFromJsonAsync<BarberApprovalResponse>(cancellationToken: cancellationToken);
         return result.IsApproved;
     }
 

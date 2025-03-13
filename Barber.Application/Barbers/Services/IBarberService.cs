@@ -16,6 +16,8 @@ public interface IBarberService
 
     ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
+    ValueTask<BarberInfo> GetBarberInfoAsync(Guid barberId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default);
 
     ValueTask<Domain.Entities.Barber> CreateAsync(BarberCreate product,
         CommandOptions commandOptions = default,
