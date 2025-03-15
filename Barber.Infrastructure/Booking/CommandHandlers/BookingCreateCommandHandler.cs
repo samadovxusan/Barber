@@ -11,15 +11,16 @@ public class BookingCreateCommandHandler(IBookingService service) : ICommandHand
     {
         var newbooking = new Domain.Entities.Booking
         {
-            BarberId = request.BarberId,
-            ServiceId = string.Join(",",request.ServiceId),
-            UserId = request.UserId,
+            BarberId = request.BookingDto.BarberId,
+            ServiceId = string.Join(",",request.BookingDto.ServiceId),
+            UserId = request.BookingDto.UserId,
             Status = Status.Pending,
-            AppointmentTime = request.AppointmentTime,
+            AppointmentTime = request.BookingDto.AppointmentTime,
             CreatedTime = DateTimeOffset.UtcNow,
         };
         var result = await service.CreateAsync(newbooking, cancellationToken: cancellationToken);
-
-        return true;
+        if(result)
+            return true;
+        return false;
     }
 }

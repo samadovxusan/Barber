@@ -46,7 +46,7 @@ public class BookingController
     }
 
     [HttpPost]
-    public async ValueTask<IActionResult> Post( BookingCreateCommand? userCreate,  
+    public async ValueTask<IActionResult> Post([FromBody] BookingCreateCommand? userCreate,  
         CancellationToken cancellationToken)  
     {  
         if (userCreate == null)  
@@ -58,11 +58,10 @@ public class BookingController
 
         if (result)  
         {  
-            string message = $" {userCreate.BarberId} {userCreate.UserId} {userCreate.AppointmentTime} {userCreate.ServiceId} joy band qilmoqchi!";  
+            string message = $"{userCreate.BookingDto.BarberId} {userCreate.BookingDto.UserId} {userCreate.BookingDto.AppointmentTime} {userCreate.BookingDto.ServiceId} joy band qilmoqchi!";  
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", message, cancellationToken: cancellationToken);
-        }  
-
-        return result ? Ok(result) : NoContent();  
+        }
+        return result ? Ok(result) : Ok(false);  
     }
 
     [HttpPut]

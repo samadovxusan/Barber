@@ -3,6 +3,7 @@
 public class BookingDto
 {
     public Guid UserId { get; set; }
-    public Guid ServiceId { get; set; }
-    public DateTime AppointmentTime { get; set; }
+    public Guid BarberId { get; set; }
+    public string ServiceId { get; set; } = string.Empty;
+    public TimeSpan AppointmentTime { get; set; }
 }
