@@ -3,7 +3,7 @@ using Barber.Domain.Enums;
 
 namespace Barber.Application.Users.Models;
 
-public class BarberCreate
+public class BarbersCreate
 {
     public string FullName { get; set; } = default!;
     public string Password { get; set; } = default!;
