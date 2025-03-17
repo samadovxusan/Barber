@@ -10,17 +10,20 @@ using Microsoft.AspNetCore.SignalR;
 namespace Barber.Api.Controllers;
 
 [ApiController]
-[Route("api/barber")]
-public class BarberApprovalController(AppDbContext context,IHubContext<BookingHub> hubContext, IBookingService bookingService) : ControllerBase
+[Route("api/[controller]")]
+public class BarberApprovalController(
+    AppDbContext context,
+    IHubContext<BookingHub> hubContext,
+    IBookingService bookingService) : ControllerBase
 {
     [HttpPost("approve")]
     public async Task<IActionResult> ApproveBooking([FromBody] BarberApprovalRequested request)
-        {
+    {
         try
         {
             if (request.Conformetion)
             {
-                var newbooking = new Booking
+                var booking = new Booking
                 {
                     Id = Guid.NewGuid(),
                     UserId = request.UserId,
@@ -29,9 +32,10 @@ public class BarberApprovalController(AppDbContext context,IHubContext<BookingHu
                     Status = Status.Confirmed,
                     CreatedTime = DateTimeOffset.UtcNow
                 };
-                await context.Bookings.AddAsync(newbooking);
+                await context.Bookings.AddAsync(booking);
                 await context.SaveChangesAsync();
-                string message = $"{newbooking.UserId} {newbooking.AppointmentTime} {newbooking.ServiceId} joy band qilindi!";  
+                string message =
+                    $"{booking.UserId} {booking.AppointmentTime} {booking.ServiceId} {booking.BarberId} joy band qilindi!";
                 await hubContext.Clients.All.SendAsync("ReceiveMessage", message);
                 return Ok(true);
             }
@@ -41,6 +45,7 @@ public class BarberApprovalController(AppDbContext context,IHubContext<BookingHu
             Console.WriteLine(e);
             throw;
         }
+
         return Ok(false);
     }
 }

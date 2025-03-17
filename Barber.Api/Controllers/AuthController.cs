@@ -16,8 +16,8 @@ public class AuthController(IAuthService authService, IMapper mapper) : Controll
         var result = await authService.Register(register);
         return Ok(result);
     }
-    [HttpPost]
-    public async Task<IActionResult> RegisterAdmin(AdminCreate register)
+    [HttpPost("Admin")]
+    public async Task<IActionResult> Register(AdminCreate register)
     {
 
         var newuser = mapper.Map<UserCreate>(register);
@@ -25,8 +25,8 @@ public class AuthController(IAuthService authService, IMapper mapper) : Controll
         var result = await authService.Register(newuser);
         return Ok(result);
     }
-    [HttpPost]
-    public async Task<IActionResult> RegisterBarber(BarbersCreate register)
+    [HttpPost("Barber")]
+    public async Task<IActionResult> Register(BarbersCreate register)
     {
       
         var newuser = mapper.Map<UserCreate>(register);
