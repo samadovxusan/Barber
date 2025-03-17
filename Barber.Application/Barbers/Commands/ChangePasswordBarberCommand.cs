@@ -3,7 +3,7 @@ using Barber.Domain.Common.Commands;
 
 namespace Barber.Application.Barbers.Commands;
 
-public class ChangePasswordBarber:ICommand<bool>
+public class ChangePasswordBarberCommand:ICommand<bool>
 {
     public ChangPassword ChangPassword { get; set; } = new ChangPassword();
 }

@@ -22,6 +22,9 @@ public interface IBarberService
     ValueTask<Domain.Entities.Barber> CreateAsync(BarberCreate product,
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
+    Task<bool> ChangPasswordAsync(ChangPassword changPassword,
+        CommandOptions commandOptions = default,
+        CancellationToken cancellationToken = default);
     
     ValueTask SetDailyScheduleAsync( BarberDailySchedule barberDailySchedule,
         CommandOptions commandOptions = default,
