@@ -1,3 +1,6 @@
+using Barber.Api.Middleware;
+using Microsoft.AspNetCore.Diagnostics;
+
 namespace Barber.Api.Configurations;
 
 public static partial class HostConfiguration
@@ -29,6 +32,7 @@ public static partial class HostConfiguration
     public static async ValueTask<WebApplication> ConfigureAsync(this WebApplication app)
     {
         app.UseCors();
+        app.UseMiddleware<GlobalException>();
         await app.SeedDataAsync();
         app
             .UseDevTools()

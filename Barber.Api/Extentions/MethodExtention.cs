@@ -1,12 +1,8 @@
 ﻿namespace Barber.Api.Extentions;
 
-public class MethodExtention
+public class MethodExtention(IWebHostEnvironment webHostEnvironment)
 {
-    private readonly IWebHostEnvironment _env;
-    public MethodExtention(IWebHostEnvironment webHostEnvironment)
-    {
-        _env = webHostEnvironment;
-    }
+    private readonly IWebHostEnvironment _env = webHostEnvironment;
 
 
     public async Task<string> AddPictureAndGetPath(IFormFile file)
