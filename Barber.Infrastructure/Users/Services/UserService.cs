@@ -4,6 +4,7 @@ using Barber.Application.Users.Services;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
+using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
 using FluentValidation;
@@ -11,7 +12,7 @@ using ValidationException = System.ComponentModel.DataAnnotations.ValidationExce
 
 namespace Barber.Infrastructure.Users.Services;
 
-public class UserService(IUserRepository userRepository, IValidator<User> validator) : IUserService
+public class UserService(IUserRepository userRepository,AppDbContext context, IValidator<User> validator) : IUserService
 {
     public IQueryable<User> Get(Expression<Func<User, bool>>? predicate = default, QueryOptions queryOptions = default)
         => userRepository.Get(predicate, queryOptions);
@@ -33,6 +34,21 @@ public class UserService(IUserRepository userRepository, IValidator<User> valida
             throw new ValidationException(validationResult.IsValid.ToString());
 
         return userRepository.CreateAsync(user, new CommandOptions(skipSaveChanges: false), cancellationToken);
+    }
+
+    public async Task<bool> ChangPasswordAsync(ChangePasswordUser changPassword, CommandOptions commandOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        var barber = await context.Users.FindAsync(changPassword.Id, cancellationToken);
+        var result = barber != null && PasswordHelper.VerifyPassword(barber.Password, changPassword.Password);
+
+        if (result)
+        {
+            if (barber != null) barber.Password = PasswordHelper.HashPassword(changPassword.NewPassword);
+            await context.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+        return false;
     }
 
 

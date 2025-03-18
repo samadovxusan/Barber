@@ -1,6 +1,7 @@
 ﻿using Barber.Application.Users.Commands;
 using Barber.Application.Users.Models;
 using Barber.Application.Users.Queries;
+using Barber.Application.Users.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ namespace Barber.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IMediator mediator) : ControllerBase
+public class UserController(IMediator mediator , IUserService service) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] UserGetQuery userGetQuery, CancellationToken cancellationToken)
@@ -37,7 +38,13 @@ public class UserController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(userCreate, cancellationToken);
         return result ? Ok(result) : NoContent();
     }
-
+    [HttpPost("CHangePassword")]
+    public async ValueTask<IActionResult> Post(UserPasswordChangeCommand changePasswordBarberCommand)
+    {
+        var result = await mediator.Send(changePasswordBarberCommand);
+        return result ? Ok(result): Ok(false);
+    }
+  
 
     [HttpPut]
     public async ValueTask<IActionResult> Update([FromBody] UserUpdateCommand command,

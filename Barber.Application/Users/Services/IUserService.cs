@@ -43,6 +43,10 @@ public interface IUserService
     /// <returns>A task representing the asynchronous operation, containing the created client entity.</returns>
     ValueTask<User> CreateAsync(User user, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
+    Task<bool> ChangPasswordAsync(ChangePasswordUser changPassword,
+        CommandOptions commandOptions = default,
+        CancellationToken cancellationToken = default);
+    
 
     /// <summary>
     /// Asynchronously updates an existing client entity with the specified options.

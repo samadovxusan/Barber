@@ -1,6 +1,10 @@
-﻿namespace Barber.Application.Users.Commands;
+﻿using Barber.Application.Users.Models;
+using Barber.Domain.Common.Commands;
 
-public class UserPasswordChangeCommand
+namespace Barber.Application.Users.Commands;
+
+public class UserPasswordChangeCommand:ICommand<bool>
 {
+    public ChangePasswordUser User{ get; set; } =  new ChangePasswordUser();
     
 }

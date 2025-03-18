@@ -64,10 +64,8 @@ public class BarberController(IMediator mediator , IBarberService service) : Con
     [HttpPost("CHangePassword")]
     public async ValueTask<IActionResult> Post(ChangePasswordBarberCommand changePasswordBarberCommand)
     {
-        Console.WriteLine($"1- {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
         var result = await mediator.Send(changePasswordBarberCommand);
-        
-        return result ? Ok(result) : NoContent();
+        return result ? Ok(result): Ok(false);
     }
 
     [HttpPost("CreateWorkingTime")]

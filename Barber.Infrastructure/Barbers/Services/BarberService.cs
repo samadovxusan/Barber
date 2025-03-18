@@ -90,7 +90,6 @@ public class BarberService(
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        Console.WriteLine($"2- {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
         var barber = await context.Barbers.FirstOrDefaultAsync(b => b.Id == changPassword.Id, cancellationToken);
         var result = barber != null && PasswordHelper.VerifyPassword(barber.Password, changPassword.Password);
 
@@ -100,9 +99,6 @@ public class BarberService(
             await context.SaveChangesAsync(cancellationToken);
             return true;
         }
-
-        Console.WriteLine($"2- {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
-
         return false;
     }
 
