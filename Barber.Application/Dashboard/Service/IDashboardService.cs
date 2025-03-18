@@ -1,6 +1,6 @@
 ﻿namespace Barber.Application.Dashboard;
 
-public class DashboardService
+public interface IDashboardService
 {
-    
+    ValueTask<Dictionary<string, int>> GetAllCount();
 }

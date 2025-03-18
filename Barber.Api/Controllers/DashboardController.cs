@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Barber.Application.Dashboard;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Barber.Api.Controllers;
 
-public class DashboardController : Controller
+[ApiController]
+[Route("[controller]")]
+public class DashboardController(IDashboardService service) : ControllerBase
 {
-    // GET
-    public IActionResult Index()
-    {
-        return View();
-    }
+    [HttpGet]
+    public async ValueTask<IActionResult> Get() =>
+        Ok(await service.GetAllCount());
 }

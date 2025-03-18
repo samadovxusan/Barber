@@ -1,11 +1,11 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
-using Barber.Api.Extentions;
 using Barber.Application.Servises.Models;
 using Barber.Application.Servises.Sarvices;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
+using Barber.Infrastructure.Extentions;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;

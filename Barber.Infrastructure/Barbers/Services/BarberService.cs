@@ -1,12 +1,12 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
-using Barber.Api.Extentions;
 using Barber.Application.Barbers.Madels;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
+using Barber.Infrastructure.Extentions;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;

@@ -7,6 +7,7 @@ using Barber.Application.Auth.Services;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;
 using Barber.Application.Common.Settings;
+using Barber.Application.Dashboard;
 using Barber.Application.Reviews.Services;
 using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
@@ -14,6 +15,7 @@ using Barber.Domain.Entities;
 using Barber.Infrastructure.Auth.Services;
 using Barber.Infrastructure.Barbers.Services;
 using Barber.Infrastructure.Booking.Services;
+using Barber.Infrastructure.Dashboard.Service;
 using Barber.Infrastructure.Reviews.Service;
 using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
@@ -38,20 +40,21 @@ public static partial class HostConfiguration
         Assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Select(Assembly.Load).ToList();
         Assemblies.Add(Assembly.GetExecutingAssembly());
     }
+
     private static WebApplicationBuilder AddValidators(this WebApplicationBuilder builder)
     {
         builder.Services.Configure<ValidationSettings>(builder.Configuration.GetSection(nameof(ValidationSettings)));
 
-        builder.Services.AddValidatorsFromAssemblies(Assemblies);        
+        builder.Services.AddValidatorsFromAssemblies(Assemblies);
         return builder;
     }
-    
+
     private static WebApplicationBuilder AddMappers(this WebApplicationBuilder builder)
     {
         builder.Services.AddAutoMapper(Assemblies);
         return builder;
     }
-    
+
     private static WebApplicationBuilder AddPersistence(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(options =>
@@ -66,8 +69,8 @@ public static partial class HostConfiguration
 
         return app;
     }
-    
-    
+
+
     private static WebApplicationBuilder AddIdentityInfrastructure(this WebApplicationBuilder builder)
     {
         // user
@@ -82,29 +85,31 @@ public static partial class HostConfiguration
         // Booking
         builder.Services.AddScoped(typeof(IBookingService), typeof(BookingService));
         builder.Services.AddScoped(typeof(IBookingRepositoriess), typeof(BookingRepositories));
-        
+
         // Auth
         builder.Services.AddScoped<IAuthService, AuthService>();
-        
+
         // Review
 
         builder.Services.AddScoped<IReviewService, ReviewService>();
+        // dashboard
+        builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+
         builder.Services.AddScoped<TimeScheduleGenerator>();
         builder.Services.AddHttpClient();
 
 
-
         #region JWT Bearer
 
-        
-
-        
-         builder.Services.AddSwaggerGen(c =>
+        builder.Services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lesson Auth", Version = "v1.0.0", Description = "Lesson Auth API" });
+            c.SwaggerDoc("v1",
+                new OpenApiInfo { Title = "Lesson Auth", Version = "v1.0.0", Description = "Lesson Auth API" });
             var securitySchema = new OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Description =
+                    "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
@@ -122,25 +127,27 @@ public static partial class HostConfiguration
             };
             c.AddSecurityRequirement(securityRequirement);
         });
-        
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(
-                   options =>
-                   {
-                       options.TokenValidationParameters = GetTokenValidationParameters(builder.Configuration);
 
-                       options.Events = new JwtBearerEvents
-                       {
-                           OnAuthenticationFailed = (context) =>
-                           {
-                               if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                               {
-                                   context.Response.Headers.Add("IsTokenExpired", "true");
-                               }
-                               return Task.CompletedTask;
-                           }
-                       };
-                   });
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(
+                options =>
+                {
+                    options.TokenValidationParameters = GetTokenValidationParameters(builder.Configuration);
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = (context) =>
+                        {
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            {
+                                context.Response.Headers.Add("IsTokenExpired", "true");
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
         TokenValidationParameters GetTokenValidationParameters(ConfigurationManager configuration)
         {
             return new TokenValidationParameters()
@@ -155,14 +162,16 @@ public static partial class HostConfiguration
                 ClockSkew = TimeSpan.Zero,
             };
         }
-        #endregion 
+
+        #endregion
 
         return builder;
     }
+
     private static WebApplicationBuilder AddMediator(this WebApplicationBuilder builder)
     {
-        builder.Services.AddMediatR(conf => {conf.RegisterServicesFromAssemblies(Assemblies.ToArray());});
-        
+        builder.Services.AddMediatR(conf => { conf.RegisterServicesFromAssemblies(Assemblies.ToArray()); });
+
         return builder;
     }
 
@@ -179,7 +188,7 @@ public static partial class HostConfiguration
 
         return builder;
     }
-    
+
     /// <summary>
     ///  Configures exposers including controllers and routing.
     /// </summary>
@@ -191,12 +200,11 @@ public static partial class HostConfiguration
             options => { options.SuppressModelStateInvalidFilter = true; }
         );
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
-     builder.Services.AddControllers()
-    .AddNewtonsoftJson(options =>
-        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-        
-        
+
         builder.Services.AddSignalR();
         return builder;
     }

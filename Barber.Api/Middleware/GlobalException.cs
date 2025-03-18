@@ -7,7 +7,6 @@ public class GlobalException
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<GlobalException> _logger;
-    Exception Exception { get; set; }
 
     public GlobalException(RequestDelegate next, ILogger<GlobalException> logger)
     {
@@ -21,21 +20,17 @@ public class GlobalException
         {
             await _next(context);
         }
-        catch (Exception ex)
+        catch (Exception )
         {
-            Exception = ex;
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             ProblemDetails problem = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "Server Error",
                 Detail = "An internal server error has occurred",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Extensions = new Dictionary<string, object?>
-                {
-                    {"errors", new [] {ex.Message }} 
-                }
+               
             };
 
             await context.Response.WriteAsJsonAsync(problem);
@@ -47,13 +42,10 @@ public class GlobalException
             ProblemDetails problemDetails = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.NoContent,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "No Content",
                 Detail = "No Content success status response code indicates",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Extensions = new Dictionary<string, object?>
-                {
-                    {"errors", new [] {Exception.Message }} 
-                }
+                Instance = context.Request.Path.Value
 
             };
             await context.Response.WriteAsJsonAsync(problemDetails);
@@ -65,13 +57,10 @@ public class GlobalException
             ProblemDetails problemDetails = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.NotFound,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "NotFound",
                 Detail = "The requested resource was not found",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Extensions = new Dictionary<string, object?>
-                {
-                    {"errors", new [] {Exception.Message }} 
-                }
+                Instance = context.Request.Path.Value
             };
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
@@ -82,13 +71,10 @@ public class GlobalException
             ProblemDetails problemDetails = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.Forbidden,
+                Type = "Forbidden",
                 Title = "Forbidden",
                 Detail = "access to the requested resource is denied",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Extensions = new Dictionary<string, object?>
-                {
-                    {"errors", new [] {Exception.Message }} 
-                }
+                Instance = context.Request.Path.Value
 
             };
             await context.Response.WriteAsJsonAsync(problemDetails);
@@ -101,13 +87,10 @@ public class GlobalException
             ProblemDetails problemDetails = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.Unauthorized,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "Unauthorized",
                 Detail = "You don’t have access",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Extensions = new Dictionary<string, object?>
-                {
-                    {"errors", new [] {Exception.Message }} 
-                }
+                Instance = context.Request.Path.Value
             };
             await context.Response.WriteAsJsonAsync(problemDetails);
 
@@ -119,13 +102,10 @@ public class GlobalException
             ProblemDetails problemDetails = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "BadRequest",
                 Detail = " Ivalid request message framing",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Extensions = new Dictionary<string, object?>
-                {
-                    {"errors", new [] {Exception.Message }} 
-                }
+                Instance = context.Request.Path.Value
             };
             await context.Response.WriteAsJsonAsync(problemDetails);
         }

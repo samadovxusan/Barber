@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
-namespace Barber.Api.Extentions;
+namespace Barber.Infrastructure.Extentions;
 
 public class MethodExtention
 {
