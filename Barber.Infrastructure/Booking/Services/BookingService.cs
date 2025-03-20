@@ -63,6 +63,9 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
             if (existingBooking != null)
                 throw new Exception("Ushbu vaqt allaqachon band qilingan.");
             
+            
+            await _context.Bookings.AddAsync(booking, cancellationToken: cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
             return true;
 
         }
