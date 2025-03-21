@@ -13,8 +13,9 @@ public  class BookingGetQueryHandler(IBookingService service):IQueryHandler<Book
         {
             var allBookings = await service
                 .Get(request.Filters, new QueryOptions() { TrackingMode = QueryTrackingMode.AsNoTracking })
-                .Include(b => b.User)
-                .Include(b => b.Barber)
+                .AsNoTracking()
+                // .Include(b => b.User)
+                // .Include(b => b.Barber)
                 .ToListAsync(cancellationToken);
 
             // `ServiceIds` string'ini `Guid[]` ga aylantiramiz

@@ -28,6 +28,6 @@ public class BarberApprovalController(
             return Ok(result);
         }
 
-        return BadRequest("Joy Band Bomadi");
+        return Ok(false);
     }
 }
