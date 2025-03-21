@@ -22,6 +22,11 @@ public interface IBookingService
     ValueTask<Boolean> CreateAsync(Domain.Entities.Booking booking,
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
+    
+    
+    ValueTask<Boolean> ChangeBooking(BarberApprovalRequested booking,
+        CommandOptions commandOptions = default,
+        CancellationToken cancellationToken = default);
 
     ValueTask<Boolean> RequestApprovalAsync(BarberApprovalRequested request,
         CommandOptions commandOptions = default,

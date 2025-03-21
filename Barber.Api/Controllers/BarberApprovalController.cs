@@ -17,35 +17,17 @@ public class BarberApprovalController(
     IBookingService bookingService) : ControllerBase
 {
     [HttpPost("approve")]
-    public async Task<IActionResult> ApproveBooking([FromBody] BarberApprovalRequested request)
+    public async Task<IActionResult> ChuckMessageBooking([FromBody] BarberApprovalRequested request)
     {
-        try
+        var result = await bookingService.ChangeBooking(request);
+        if (result)
         {
-            if (request.Conformetion)
-            {
-                var booking = new Booking
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = request.UserId,
-                    BarberId = request.BarberId,
-                    ServiceId = request.ServiceId,
-                    Status = Status.Confirmed,
-                    CreatedTime = DateTimeOffset.UtcNow
-                };
-                await context.Bookings.AddAsync(booking);
-                await context.SaveChangesAsync();
-                string message =
-                    $"{booking.UserId} {booking.AppointmentTime} {booking.ServiceId} {booking.BarberId} joy band qilindi!";
-                await hubContext.Clients.All.SendAsync("ReceiveMessage", message);
-                return Ok(true);
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
+            string message =
+                $"{request.BookingId}  joy band qilindi!";
+            await hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+            return Ok(result);
         }
 
-        return Ok(false);
+        return BadRequest("Joy Band Bomadi");
     }
 }

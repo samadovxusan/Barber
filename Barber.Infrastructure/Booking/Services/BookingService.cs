@@ -76,6 +76,18 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
         }
     }
 
+    public async ValueTask<bool> ChangeBooking(BarberApprovalRequested request, CommandOptions commandOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        if (request.Conformetion)
+                return true;
+
+        var result = await repositoriess.Delete(request.BookingId,commandOptions, cancellationToken);
+        if (result != null)
+            return false;
+        return false;
+    }
+
     public async ValueTask<bool> RequestApprovalAsync(BarberApprovalRequested request, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {

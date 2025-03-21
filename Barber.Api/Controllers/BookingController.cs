@@ -7,6 +7,7 @@ using Barber.Persistence.DataContexts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+
 namespace Barber.Api.Controllers;
 
 [Controller]
@@ -18,13 +19,13 @@ public class BookingController
     private readonly IMediator _mediator;
     private readonly IBookingService _service;
 
-    public BookingController(IHubContext<BookingHub> hubContext,IMediator mediator,IBookingService service)
+    public BookingController(IHubContext<BookingHub> hubContext, IMediator mediator, IBookingService service)
     {
-            _hubContext = hubContext;
-            _mediator = mediator;
-            _service = service;
+        _hubContext = hubContext;
+        _mediator = mediator;
+        _service = service;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] BookingGetQuery bookingGetQuery,
         CancellationToken cancellationToken)
@@ -36,7 +37,7 @@ public class BookingController
     [HttpGet($"by-barber{{barberId:guid}}")]
     public async ValueTask<IActionResult> Get(Guid barberId)
         => Ok(await _service.GetByIdBarberAsync(barberId));
-    
+
 
     [HttpGet("{bookingId:guid}")]
     public async ValueTask<IActionResult> GetById([FromRoute] Guid bookingId, CancellationToken cancellationToken)
@@ -46,22 +47,24 @@ public class BookingController
     }
 
     [HttpPost]
-    public async ValueTask<IActionResult> Post([FromBody] BookingCreateCommand? userCreate,  
-        CancellationToken cancellationToken)  
-    {  
-        if (userCreate == null)  
-        {  
-            return BadRequest("User model cannot be null.");  
-        }  
+    public async ValueTask<IActionResult> Post([FromBody] BookingCreateCommand? userCreate,
+        CancellationToken cancellationToken)
+    {
+        if (userCreate == null)
+        {
+            return BadRequest("User model cannot be null.");
+        }
 
-        var result = await _mediator.Send(userCreate, cancellationToken);  
+        var result = await _mediator.Send(userCreate, cancellationToken);
 
-        if (result)  
-        {  
-            string message = $"{userCreate.BookingDto.BarberId} {userCreate.BookingDto.UserId} {userCreate.BookingDto.AppointmentTime} {userCreate.BookingDto.ServiceId} joy band qilmoqchi!";  
+        if (result)
+        {
+            string message =
+                $"{userCreate.BookingDto.BarberId} {userCreate.BookingDto.UserId} {userCreate.BookingDto.AppointmentTime} {userCreate.BookingDto.ServiceId} joy band qilmoqchi!";
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", message, cancellationToken: cancellationToken);
         }
-        return result ? Ok(result) : Ok(false);  
+
+        return result ? Ok(result) : Ok(false);
     }
 
     [HttpPut]
