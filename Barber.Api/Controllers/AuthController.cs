@@ -41,4 +41,15 @@ public class AuthController(IAuthService authService, IMapper mapper) : Controll
         var result = await authService.Login(login);
         return Ok(result);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> RefreshToken(string refreshToken)
+    {
+        var result = await authService.RefreshToken(refreshToken);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RevokeRefreshToken(Guid userId)
+        => Ok(await authService.RevokeRefreshToken(userId));
 }

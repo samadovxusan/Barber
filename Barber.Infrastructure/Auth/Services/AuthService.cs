@@ -11,22 +11,23 @@ using Microsoft.Extensions.Configuration;
 
 namespace Barber.Infrastructure.Auth.Services;
 
-public class AuthService(AppDbContext dbContext,IUserService service,  IMapper mapper, IConfiguration configuration): IAuthService
+public class AuthService(AppDbContext dbContext, IUserService service, IMapper mapper, IConfiguration configuration)
+    : IAuthService
 {
-    public async  ValueTask<bool> Register(UserCreate register)
+    public async ValueTask<bool> Register(UserCreate register)
     {
         try
         {
             var user = mapper.Map<User>(register);
-            var newuser = await dbContext.Users.FirstOrDefaultAsync(u=> u.PhoneNumber== register.PhoneNumber);
-            if(newuser != null)
+            var newuser = await dbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == register.PhoneNumber);
+            if (newuser != null)
             {
                 throw new InvalidOperationException("This number or name has already been registered.");
             }
 
             user.Password = PasswordHelper.HashPassword(user.Password);
             await dbContext.Users.AddAsync(user);
-            await dbContext.SaveChangesAsync(); 
+            await dbContext.SaveChangesAsync();
             return true;
         }
         catch (Exception e)
@@ -39,13 +40,54 @@ public class AuthService(AppDbContext dbContext,IUserService service,  IMapper m
     {
         var token = new LoginDto();
         var newUser = await dbContext.Users.FirstOrDefaultAsync(x => x.PhoneNumber == login.PhoneNumber);
-        if(!PasswordHelper.VerifyPassword(newUser.Password , login.Password))
+        if (!PasswordHelper.VerifyPassword(newUser.Password, login.Password))
         {
             token.Success = false;
             return token;
         }
-        var jwtToken = new IdentityTokenGeneratorService(configuration);
-        token.Token = await jwtToken.GenerateToken(newUser); 
+
+        var jwtToken = new IdentityTokenGeneratorService(configuration, dbContext);
+        token.AccessToken = await jwtToken.GenerateToken(newUser);
+        var refreshToken = new RefreshToken()
+        {
+            Id = Guid.NewGuid(),
+            UserId = newUser.Id,
+            Token = jwtToken.GenerateRefreshTokenAsync().Result,
+            Expires = DateTime.UtcNow.AddDays(7)
+        };
+        await dbContext.RefreshTokens.AddAsync(refreshToken);
+        await dbContext.SaveChangesAsync();
+        token.RefreshToken = refreshToken.Token;
         return token;
+    }
+
+    public async ValueTask<Token> RefreshToken(string refreshToken)
+    {
+        var jwtToken = new IdentityTokenGeneratorService(configuration, dbContext);
+        RefreshToken? refreshTokenAsync = await dbContext.RefreshTokens
+            .Include(r => r.User)
+            .FirstOrDefaultAsync(r => r.Token == refreshToken);
+        if (refreshToken is null || refreshTokenAsync.Expires < DateTime.UtcNow)
+        {
+            throw new ApplicationException("Invalid refresh token");
+        }
+
+        refreshTokenAsync.Token = await jwtToken.GenerateRefreshTokenAsync();
+        refreshTokenAsync.Expires = DateTime.UtcNow.AddDays(7);
+        await dbContext.SaveChangesAsync();
+        var token = new Token()
+        {
+            AccessToken = await jwtToken.GenerateToken(refreshTokenAsync.User),
+            RefreshToken = refreshTokenAsync.Token,
+        };
+        return token;
+    }
+
+    public async ValueTask<bool> RevokeRefreshToken(Guid userId)
+    {
+        await dbContext.RefreshTokens
+            .Where(r => r.UserId == userId)
+            .ExecuteDeleteAsync();
+        return true;
     }
 }
