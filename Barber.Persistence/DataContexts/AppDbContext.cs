@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using Barber.Application.Auth.Models;
 using Barber.Domain.Entities;
 using Barber.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -24,5 +25,6 @@ public class AppDbContext : DbContext
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Images> Imageses { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 }
