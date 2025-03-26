@@ -5,12 +5,14 @@ using Barber.Application.Booking.Queries;
 using Barber.Application.Booking.Service;
 using Barber.Persistence.DataContexts;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Barber.Api.Controllers;
 
 [Controller]
+[Authorize]
 [Route("api/[controller]")]
 public class BookingController
     : ControllerBase
