@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Barber.Api.Controllers;
 
 [ApiController]
- [Authorize]
 [Route("api/[controller]")]
 public class BarberController(IMediator mediator , IBarberService service) : ControllerBase
 {
