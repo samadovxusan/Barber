@@ -1,9 +1,11 @@
-﻿using Barber.Application.Barbers.Commands;
+﻿using System.Runtime.InteropServices.JavaScript;
+using Barber.Application.Barbers.Commands;
 using Barber.Application.Barbers.Madels;
 using Barber.Application.Barbers.Queries;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Users.Commands;
 using Barber.Domain.Common.Queries;
+using Barber.Persistence.DataContexts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +15,7 @@ namespace Barber.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BarberController(IMediator mediator , IBarberService service) : ControllerBase
+public class BarberController(IMediator mediator , IBarberService service , AppDbContext context ) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] BarberGetAllQuary barberGetQuery,
@@ -88,4 +90,21 @@ public class BarberController(IMediator mediator , IBarberService service) : Con
         var result = await mediator.Send(new DeleteBarberCommand() { BarberId = barberId }, cancellationToken);
         return result ? Ok() : BadRequest();
     }
+
+
+    [HttpGet("barberBusyTime")]
+    public async ValueTask<IActionResult> GetBarberBusyTime(Guid barberId, CancellationToken cancellationToken)
+    {
+        var result = await context.Bookings
+            .Where(b => b.BarberId == barberId)
+            .Select(b => new 
+            {
+                Date = b.Date,  // DateOnly ni qaytaramiz
+                AppointmentTime = b.AppointmentTime // TimeSpan ni qaytaramiz
+            })
+            .ToListAsync(cancellationToken);
+
+        return Ok(result);
+    }
+
 }

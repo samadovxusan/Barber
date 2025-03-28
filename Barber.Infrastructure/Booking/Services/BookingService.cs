@@ -55,6 +55,9 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
 
             if (barberSchedule == null)
                 throw new Exception("Barber bu vaqtda ishlamaydi.");
+
+            
+            
             
             await _context.Bookings.AddAsync(booking, cancellationToken: cancellationToken);
             await _context.SaveChangesAsync(cancellationToken: cancellationToken);

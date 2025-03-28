@@ -16,6 +16,7 @@ public class BookingCreateCommandHandler(IBookingService service) : ICommandHand
             UserId = request.BookingDto.UserId,
             Status = Status.Pending,
             AppointmentTime = request.BookingDto.AppointmentTime,
+            Date = request.BookingDto.Date,
             CreatedTime = DateTimeOffset.UtcNow,
         };
         var result = await service.CreateAsync(newbooking, cancellationToken: cancellationToken);
