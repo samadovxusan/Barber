@@ -3,6 +3,6 @@
 public class BarberWokingTime
 {
     public Guid BarberId { get; set; }
-    public TimeSpan StartTime { get; set; }  // working Date
-    public TimeSpan EndTime { get; set; }    // end Date
+    public DateTime StartTime { get; set; }  // working Date
+    public DateTime EndTime { get; set; }    // end Date
 }

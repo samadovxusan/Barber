@@ -11,5 +11,6 @@ public class BarberDailySchedule :AuditableEntity
 
     public TimeSpan StartTime { get; set; }  // working Date
     public TimeSpan EndTime { get; set; }    // end Date
+    
     public bool IsWorking { get; set; } = true; 
 }

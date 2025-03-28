@@ -5,7 +5,7 @@ namespace Barber.Persistence.EntityCongurations;
 
 public class BarberEntityConfiguration:IEntityTypeConfiguration<Domain.Entities.Barber>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Barber> builder)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Barber>builder)
     {
         builder.HasKey(b => b.Id);
         builder.Property(b => b.FullName).IsRequired().HasMaxLength(100);

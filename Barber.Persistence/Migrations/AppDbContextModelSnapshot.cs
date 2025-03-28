@@ -85,7 +85,12 @@ namespace Barber.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Barbers");
                 });
@@ -136,6 +141,9 @@ namespace Barber.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
                     b.Property<DateTimeOffset?>("ModifiedTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -173,6 +181,7 @@ namespace Barber.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
@@ -304,6 +313,17 @@ namespace Barber.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Barber.Domain.Entities.Barber", b =>
+                {
+                    b.HasOne("Barber.Domain.Entities.User", "Users")
+                        .WithMany("Barbers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Barber.Domain.Entities.BarberDailySchedule", b =>
                 {
                     b.HasOne("Barber.Domain.Entities.Barber", "Barber")
@@ -386,6 +406,8 @@ namespace Barber.Persistence.Migrations
 
             modelBuilder.Entity("Barber.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Barbers");
+
                     b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618

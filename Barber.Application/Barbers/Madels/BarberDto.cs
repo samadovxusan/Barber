@@ -7,6 +7,7 @@ namespace Barber.Application.Barbers.Madels;
 public class BarberDto
 {
     public Guid Id { get; set; }
+    public Guid UserId { get; set; }
     public string FullName { get; set; } = default!;
     public int Age { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;

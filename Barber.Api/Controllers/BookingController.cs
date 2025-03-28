@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.SignalR;
 namespace Barber.Api.Controllers;
 
 [Controller]
-[Authorize]
 [Route("api/[controller]")]
 public class BookingController
     : ControllerBase
