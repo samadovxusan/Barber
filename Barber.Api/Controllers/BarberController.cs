@@ -99,12 +99,46 @@ public class BarberController(IMediator mediator , IBarberService service , AppD
             .Where(b => b.BarberId == barberId)
             .Select(b => new 
             {
-                Date = b.Date,  // DateOnly ni qaytaramiz
-                AppointmentTime = b.AppointmentTime // TimeSpan ni qaytaramiz
+                b.Date,  // DateOnly ni qaytaramiz
+                b.AppointmentTime, // TimeSpan ni qaytaramiz
+                b.ServiceId // Service Id
             })
             .ToListAsync(cancellationToken);
 
-        return Ok(result);
+// Dictionary yaratamiz: Date -> { "AppointmentTime": "...", "EndTime": "..." }
+        var dictionary = new Dictionary<DateOnly, List<Dictionary<string, string>>>();
+
+        foreach (var booking in result)
+        {
+            // ServiceId bo'yicha Durationni olish
+            var serviceDuration = context.Services
+                .Where(s => s.Id.ToString() == booking.ServiceId)
+                .Select(s => s.Duration)
+                .FirstOrDefault();  // Asinxron bo'lmagan metod
+
+            // EndTime ni hisoblaymiz
+            var endTime = booking.AppointmentTime + serviceDuration;
+
+            // Datega asoslanib dictionaryga qo'shamiz
+            if (!dictionary.ContainsKey(booking.Date))
+            {
+                dictionary[booking.Date] = new List<Dictionary<string, string>>();
+            }
+
+            // Har bir booking uchun AppointmentTime va EndTime obyektini qo'shamiz
+            dictionary[booking.Date].Add(new Dictionary<string, string>
+            {
+                { "AppointmentTime", booking.AppointmentTime.ToString(@"hh\:mm\:ss") },
+                { "EndTime", endTime.ToString(@"hh\:mm\:ss") }
+            });
+        }
+
+        return Ok(dictionary);
+
+
+
+        return Ok(dictionary);
     }
+
 
 }
