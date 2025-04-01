@@ -99,45 +99,55 @@ public class BarberController(IMediator mediator , IBarberService service , AppD
             .Where(b => b.BarberId == barberId)
             .Select(b => new 
             {
-                b.Date,  // DateOnly ni qaytaramiz
-                b.AppointmentTime, // TimeSpan ni qaytaramiz
-                b.ServiceId // Service Id
+                b.Date,  // DateOnly
+                b.AppointmentTime, // TimeSpan
+                b.ServiceId // Vergul bilan ajratilgan string
             })
             .ToListAsync(cancellationToken);
 
-// Dictionary yaratamiz: Date -> { "AppointmentTime": "...", "EndTime": "..." }
-        var dictionary = new Dictionary<DateOnly, List<Dictionary<string, string>>>();
+// Dictionary yaratamiz: Date -> List<{ AppointmentTime, EndTime }>
+        var dictionary = new Dictionary<DateOnly, List<object>>();
 
         foreach (var booking in result)
         {
-            // ServiceId bo'yicha Durationni olish
-            var serviceDuration = context.Services
-                .Where(s => s.Id.ToString() == booking.ServiceId)
-                .Select(s => s.Duration)
-                .FirstOrDefault();  // Asinxron bo'lmagan metod
+            // ServiceId stringni vergulga ajratamiz
+            var serviceIdsArray = booking.ServiceId.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            // EndTime ni hisoblaymiz
-            var endTime = booking.AppointmentTime + serviceDuration;
+            TimeSpan totalDuration = TimeSpan.Zero;
+
+            foreach (var serviceId in serviceIdsArray)
+            {
+                var serviceDuration = context.Services
+                    .Where(s => s.Id.ToString() == serviceId.Trim())
+                    .Select(s => s.Duration)
+                    .FirstOrDefault();  
+
+                totalDuration += serviceDuration; // Barcha durationlarni qo‘shamiz
+            }
+
+            // EndTime hisoblash
+            var endTime = booking.AppointmentTime + totalDuration;
 
             // Datega asoslanib dictionaryga qo'shamiz
             if (!dictionary.ContainsKey(booking.Date))
             {
-                dictionary[booking.Date] = new List<Dictionary<string, string>>();
+                dictionary[booking.Date] = new List<object>();
             }
 
-            // Har bir booking uchun AppointmentTime va EndTime obyektini qo'shamiz
-            dictionary[booking.Date].Add(new Dictionary<string, string>
+            // Har bir booking uchun AppointmentTime va EndTime qo‘shiladi
+            dictionary[booking.Date].Add(new 
             {
-                { "AppointmentTime", booking.AppointmentTime.ToString(@"hh\:mm\:ss") },
-                { "EndTime", endTime.ToString(@"hh\:mm\:ss") }
+                AppointmentTime = booking.AppointmentTime.ToString(@"hh\:mm\:ss"),
+                EndTime = endTime.ToString(@"hh\:mm\:ss")
             });
         }
 
         return Ok(dictionary);
 
 
+        
 
-        return Ok(dictionary);
+       
     }
 
 
