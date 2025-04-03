@@ -6,11 +6,12 @@ namespace Barber.Application.Barbers.Madels;
 
 public class BarberCreate
 {
-    public Guid UserId { get; set; }
     public string FullName { get; set; } = default!;
     public int Age { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public IFormFile ImageUrl { get; set; } = default!;
+    [JsonIgnore]
+    public Role Role { get; set; } = Role.Barber;
 }
