@@ -14,6 +14,4 @@ public class BarberDto
     public string Address { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public IFormFile ImagetUrl { get; set; } = default!;
-    [JsonIgnore]
-    public Role Role { get; set; } = Role.Barber;
 }

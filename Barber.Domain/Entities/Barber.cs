@@ -12,7 +12,8 @@ public class Barber : AuditableEntity
     public string Address { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
-    [JsonIgnore] public Role Role { get; set; } = Role.Barber;
+    [JsonIgnore]
+    public Role Role { get; set; } = Role.Barber;
     public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
     public ICollection<Images> Images { get; set; } = new List<Images>();
     public ICollection<BarberDailySchedule> BarberWorkingTime { get; set; } = new List<BarberDailySchedule>();
