@@ -17,13 +17,13 @@ public class BarberApprovalController(
     IBookingService bookingService) : ControllerBase
 {
     [HttpPost("approve")]
-    public async Task<IActionResult> ChuckMessageBooking([FromBody] BarberApprovalRequested request)
+    public async Task<IActionResult> ChuckMessageBooking([FromQuery] BarberApprovalRequested request)
     {
         var result = await bookingService.ChangeBooking(request);
         if (result)
         {
             string message =
-                $"{request.BookingId}  joy band qilindi!";
+                $"{request.UserId}  joy band qilindi!";
             await hubContext.Clients.All.SendAsync("ReceiveMessage", message);
             return Ok(result);
         }

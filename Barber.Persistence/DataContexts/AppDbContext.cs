@@ -23,7 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<BarberDailySchedule?> BarberDailySchedules { get; set; }
     public DbSet<Domain.Entities.Barber> Barbers { get; set; }
     public DbSet<Service> Services { get; set; }
-    public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Booking?> Bookings { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Images> Imageses { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }

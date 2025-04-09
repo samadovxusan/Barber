@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Barber.Application.Booking.Models;
 using Barber.Application.Booking.Service;
 using Barber.Domain.Common.Commands;
@@ -47,20 +48,10 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
         try
         {
             booking.CreatedTime = DateTimeOffset.UtcNow;
-
-            var barberSchedule = await _context.BarberDailySchedules
-                .FirstOrDefaultAsync(b => b.BarberId == booking.BarberId
-                                          && b.StartTime <= booking.AppointmentTime
-                                          && b.EndTime >= booking.AppointmentTime, cancellationToken: cancellationToken);
-
-            if (barberSchedule == null)
-                throw new Exception("Barber bu vaqtda ishlamaydi.");
-
             
-            
-            
-            await _context.Bookings.AddAsync(booking, cancellationToken: cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
+            string filePath = "bookings-temp.json";
+            var json = JsonSerializer.Serialize(booking);
+            await File.WriteAllTextAsync(filePath, json, cancellationToken);
             return true;
 
         }
@@ -75,11 +66,15 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
         CancellationToken cancellationToken = default)
     {
         if (request.Conformetion)
-                return true;
+        {
+            string jsonContent = await File.ReadAllTextAsync("bookings-temp.json"); 
+            Domain.Entities.Booking? readBooking = JsonSerializer.Deserialize<Domain.Entities.Booking>(jsonContent);
+            await _context.Bookings.AddRangeAsync(readBooking);
+            await _context.SaveChangesAsync(cancellationToken);
+            await File.WriteAllTextAsync("bookings-temp.json", string.Empty, cancellationToken);
+            return true;
 
-        var result = await repositoriess.Delete(request.BookingId,commandOptions, cancellationToken);
-        if (result != null)
-            return false;
+        }
         return false;
     }
 

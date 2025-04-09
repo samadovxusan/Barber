@@ -5,24 +5,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Infrastructure.Booking.QueriesHandler;
 
-public  class BookingGetQueryHandler(IBookingService service):IQueryHandler<BookingGetQuery,List<Domain.Entities.Booking>>
+public class BookingGetQueryHandler(IBookingService service)
+    : IQueryHandler<BookingGetQuery, List<Domain.Entities.Booking>>
 {
-    public async Task<List<Domain.Entities.Booking>> Handle(BookingGetQuery request, CancellationToken cancellationToken)
+    public async Task<List<Domain.Entities.Booking>> Handle(BookingGetQuery request,
+        CancellationToken cancellationToken)
     {
         if (request.Filters != null)
         {
             var allBookings = await service
                 .Get(request.Filters, new QueryOptions() { TrackingMode = QueryTrackingMode.AsNoTracking })
                 .AsNoTracking()
-                // .Include(b => b.User)
-                // .Include(b => b.Barber)
                 .ToListAsync(cancellationToken);
 
-            // `ServiceIds` string'ini `Guid[]` ga aylantiramiz
             foreach (var booking in allBookings)
             {
-                booking.ServiceIdsArray = string.IsNullOrEmpty(booking.ServiceId) 
-                    ? Array.Empty<Guid>() 
+                booking.ServiceIdsArray = string.IsNullOrEmpty(booking.ServiceId)
+                    ? Array.Empty<Guid>()
                     : booking.ServiceId.Split(',')
                         .Where(s => Guid.TryParse(s, out _))
                         .Select(Guid.Parse)
@@ -34,7 +33,4 @@ public  class BookingGetQueryHandler(IBookingService service):IQueryHandler<Book
 
         return null;
     }
-
-
-    
 }
