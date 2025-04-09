@@ -9,6 +9,7 @@ using Barber.Domain.Entities;
 using Barber.Infrastructure.Extentions;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
+using Barber.Persistence.Migrations;
 using Barber.Persistence.Repositories.Interface;
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,21 @@ public class BarberService(
     {
         return barberService.Get(queryOptions: queryOptions).ApplyPagination(productFilter);
     }
+
+    public async ValueTask<BarberWokingTime?> Get(Guid barberId)
+    {
+         var result = await context.BarberDailySchedules.FirstOrDefaultAsync(x => x.BarberId == barberId);
+         var barber = new BarberWokingTime()
+         {
+             BarberId = result.BarberId,
+             StartTime = result.StartTime,
+             EndTime = result.EndTime,
+         };
+         return barber;
+    }
+
+
+
 
     public async ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid id, QueryOptions options,
         CancellationToken cancellationToken)
@@ -99,6 +115,7 @@ public class BarberService(
             await context.SaveChangesAsync(cancellationToken);
             return true;
         }
+
         return false;
     }
 

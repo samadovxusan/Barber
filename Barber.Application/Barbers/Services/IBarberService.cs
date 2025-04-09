@@ -13,6 +13,7 @@ public interface IBarberService
         QueryOptions queryOptions = default);
 
     IQueryable<Domain.Entities.Barber> Get(BarberFilter productFilter, QueryOptions queryOptions = default);
+    ValueTask<BarberWokingTime?> Get(Guid barberId);
 
     ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);

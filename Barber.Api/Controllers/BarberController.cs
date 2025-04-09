@@ -50,6 +50,14 @@ public class BarberController(IMediator mediator , IBarberService service , AppD
         return Ok(result);
     }
 
+    [HttpGet("BarberWorkingTime")]
+    public async ValueTask<IActionResult> Get([FromQuery]BarberGetWorkingTImeQuery barberGetWorkingTimeQuery)
+    {
+        var result = await mediator.Send(barberGetWorkingTimeQuery);
+        return Ok(result);NoContent();
+    }
+    
+
     [HttpPost]
     public async ValueTask<IActionResult> Post([FromForm] CreateBerberCommand? userCreate,
         CancellationToken cancellationToken)
