@@ -5,12 +5,13 @@ using Barber.Domain.Enums;
 
 namespace Barber.Infrastructure.Booking.CommandHandlers;
 
-public class BookingCreateCommandHandler(IBookingService service) : ICommandHandler<BookingCreateCommand, bool>
+public class BookingCreateCommandHandler(IBookingService service) : ICommandHandler<BookingCreateCommand, Domain.Entities.Booking>
 {
-    public async Task<bool> Handle(BookingCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Domain.Entities.Booking> Handle(BookingCreateCommand request, CancellationToken cancellationToken)
     {
         var newbooking = new Domain.Entities.Booking
         {
+            Id = Guid.NewGuid(),
             BarberId = request.BookingDto.BarberId,
             ServiceId = string.Join(",",request.BookingDto.ServiceId),
             UserId = request.BookingDto.UserId,
@@ -21,7 +22,8 @@ public class BookingCreateCommandHandler(IBookingService service) : ICommandHand
         };
         var result = await service.CreateAsync(newbooking, cancellationToken: cancellationToken);
         if(result)
-            return true;
-        return false;
+            return newbooking;
+        return new Domain.Entities.Booking();
+
     }
 }

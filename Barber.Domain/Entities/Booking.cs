@@ -14,6 +14,7 @@ public class Booking:AuditableEntity
     public User? User { get; set; }
     public Guid BarberId { get; set; }
     public Barber? Barber { get; set; }
+    public bool Confirmed { get; set; } = false;
     public string ServiceId { get; set; } = string.Empty;
     [NotMapped]
     public Guid[] ServiceIdsArray { get; set; } = Array.Empty<Guid>();

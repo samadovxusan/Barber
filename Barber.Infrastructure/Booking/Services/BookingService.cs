@@ -5,6 +5,7 @@ using Barber.Application.Booking.Models;
 using Barber.Application.Booking.Service;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
+using Barber.Domain.Entities;
 using Barber.Domain.Enums;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
@@ -13,7 +14,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Infrastructure.Booking.Services;
 
-public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _context,HttpClient _httpClient) : IBookingService
+public class BookingService(IBookingRepositoriess repositoriess, AppDbContext _context, HttpClient _httpClient)
+    : IBookingService
 {
     public IQueryable<Domain.Entities.Booking> Get(Expression<Func<Domain.Entities.Booking, bool>>? predicate = default,
         QueryOptions queryOptions = default)
@@ -47,13 +49,9 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
     {
         try
         {
-            booking.CreatedTime = DateTimeOffset.UtcNow;
-            
-            string filePath = "bookings-temp.json";
-            var json = JsonSerializer.Serialize(booking);
-            await File.WriteAllTextAsync(filePath, json, cancellationToken);
+            await _context.Bookings.AddAsync(booking, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
             return true;
-
         }
         catch (Exception e)
         {
@@ -62,33 +60,40 @@ public class BookingService(IBookingRepositoriess repositoriess,  AppDbContext _
         }
     }
 
-    public async ValueTask<bool> ChangeBooking(BarberApprovalRequested request, CommandOptions commandOptions = default,
+    public async ValueTask<bool> ChangeBooking(
+        BarberApprovalRequested request,
+        CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
-    {
-        if (request.Conformetion)
+    { 
+        var book = await _context.Bookings.FirstOrDefaultAsync(x =>x.Id ==request.BookingId, cancellationToken: cancellationToken);
+        if (!request.Conformetion)
         {
-            string jsonContent = await File.ReadAllTextAsync("bookings-temp.json"); 
-            Domain.Entities.Booking? readBooking = JsonSerializer.Deserialize<Domain.Entities.Booking>(jsonContent);
-            await _context.Bookings.AddRangeAsync(readBooking);
+            _context.Bookings.Remove(book);
             await _context.SaveChangesAsync(cancellationToken);
-            await File.WriteAllTextAsync("bookings-temp.json", string.Empty, cancellationToken);
-            return true;
-
+            return false;
         }
-        return false;
+
+        book.Confirmed = true;
+        book.Status = Status.Confirmed;
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
     }
 
-    public async ValueTask<bool> RequestApprovalAsync(BarberApprovalRequested request, CommandOptions commandOptions = default,
+
+    public async ValueTask<bool> RequestApprovalAsync(BarberApprovalRequested request,
+        CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("https://95.47.238.221:3034/api/barber/approve", request, cancellationToken: cancellationToken);
+        var response = await _httpClient.PostAsJsonAsync("https://95.47.238.221:3034/api/barber/approve", request,
+            cancellationToken: cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
             return false;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<BarberApprovalResponse>(cancellationToken: cancellationToken);
+        var result =
+            await response.Content.ReadFromJsonAsync<BarberApprovalResponse>(cancellationToken: cancellationToken);
         return result.IsApproved;
     }
 

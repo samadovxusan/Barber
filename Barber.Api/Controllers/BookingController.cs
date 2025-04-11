@@ -58,14 +58,15 @@ public class BookingController
 
         var result = await _mediator.Send(userCreate, cancellationToken);
 
-        if (result)
+        if (result is null)
         {
             string message =
-                $"{userCreate.BookingDto.BarberId} {userCreate.BookingDto.UserId} {userCreate.BookingDto.AppointmentTime} {userCreate.BookingDto.ServiceId} joy band qilmoqchi!";
+                $"BookingId {result.Id}  UserId {userCreate.BookingDto.UserId} shu kuni {userCreate.BookingDto.Date} shu vaqtiga {userCreate.BookingDto.AppointmentTime} shu service {userCreate.BookingDto.ServiceId} joy band qilmoqchi!";
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", message, cancellationToken: cancellationToken);
         }
 
-        return result ? Ok(result) : Ok(false);
+        return Ok(true);
+
     }
 
     [HttpPut]

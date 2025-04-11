@@ -23,7 +23,7 @@ public class BarberApprovalController(
         if (result)
         {
             string message =
-                $"{request.UserId}  joy band qilindi!";
+                $"{request.BookingId}  joy band qilindi!";
             await hubContext.Clients.All.SendAsync("ReceiveMessage", message);
             return Ok(result);
         }

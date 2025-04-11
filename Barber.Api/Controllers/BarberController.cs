@@ -104,7 +104,7 @@ public class BarberController(IMediator mediator , IBarberService service , AppD
     public async ValueTask<IActionResult> GetBarberBusyTime(Guid barberId, CancellationToken cancellationToken)
     {
         var result = await context.Bookings
-            .Where(b => b.BarberId == barberId)
+            .Where(b => b.BarberId == barberId && b.Confirmed == true)
             .Select(b => new 
             {
                 b.Date,  // DateOnly

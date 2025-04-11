@@ -26,7 +26,6 @@ public class AppDbContext : DbContext
     public DbSet<Booking?> Bookings { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Images> Imageses { get; set; }
-    public DbSet<BookingData> BookingDatas { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 }
