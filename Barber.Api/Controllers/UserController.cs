@@ -2,15 +2,18 @@
 using Barber.Application.Users.Models;
 using Barber.Application.Users.Queries;
 using Barber.Application.Users.Services;
+using Barber.Persistence.DataContexts;
+using Barber.Persistence.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barber.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IMediator mediator , IUserService service) : ControllerBase
+public class UserController(IMediator mediator , IUserService service ,AppDbContext appDbContext) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] UserGetQuery userGetQuery, CancellationToken cancellationToken)
@@ -25,6 +28,18 @@ public class UserController(IMediator mediator , IUserService service) : Control
         var result = await mediator.Send(new UserGetByIdQuery() { Id = clientId }, cancellationToken);
         return result is not null ? Ok(result) : NoContent();
     }
+
+    [HttpGet("bookings")]
+    public async ValueTask<IActionResult> Get([FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await service.Get(u => u.Id == id)
+            .Include(u => u.Bookings)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        return  Ok(result);
+    }
+        
+    
 
     [HttpPost]
     public async ValueTask<IActionResult> Post([FromBody] UserCreateCommand userCreate,

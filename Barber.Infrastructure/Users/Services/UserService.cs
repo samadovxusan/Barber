@@ -8,11 +8,13 @@ using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
 using Barber.Persistence.Repositories.Interface;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace Barber.Infrastructure.Users.Services;
 
-public class UserService(IUserRepository userRepository,AppDbContext context, IValidator<User> validator) : IUserService
+public class UserService(IUserRepository userRepository, AppDbContext context, IValidator<User> validator)
+    : IUserService
 {
     public IQueryable<User> Get(Expression<Func<User, bool>>? predicate = default, QueryOptions queryOptions = default)
         => userRepository.Get(predicate, queryOptions);
@@ -23,6 +25,19 @@ public class UserService(IUserRepository userRepository,AppDbContext context, IV
     public ValueTask<User?> GetByIdAsync(Guid clientId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default)
         => userRepository.GetByIdAsync(clientId, queryOptions, cancellationToken);
+
+    public async ValueTask<ICollection<Domain.Entities.Booking>?> GetByIdBookingAsync(
+        Guid userId,
+        QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        var userWithBookings = await context.Users
+            .Include(u => u.Bookings) // Booking larni yuklash
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        return userWithBookings?.Bookings;
+    }
+
 
     public ValueTask<User> CreateAsync(User user,
         CommandOptions commandOptions = default,
@@ -36,7 +51,8 @@ public class UserService(IUserRepository userRepository,AppDbContext context, IV
         return userRepository.CreateAsync(user, new CommandOptions(skipSaveChanges: false), cancellationToken);
     }
 
-    public async Task<bool> ChangPasswordAsync(ChangePasswordUser changPassword, CommandOptions commandOptions = default,
+    public async Task<bool> ChangPasswordAsync(ChangePasswordUser changPassword,
+        CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
         var barber = await context.Users.FindAsync(changPassword.Id, cancellationToken);
@@ -48,6 +64,7 @@ public class UserService(IUserRepository userRepository,AppDbContext context, IV
             await context.SaveChangesAsync(cancellationToken);
             return true;
         }
+
         return false;
     }
 

@@ -33,6 +33,9 @@ public interface IUserService
     /// <returns>A task representing the asynchronous operation, containing the client entity, or null if not found.</returns>
     ValueTask<User?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
+    
+    ValueTask<ICollection<Domain.Entities.Booking>?> GetByIdBookingAsync(Guid userId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously creates a new client entity with the specified options.
