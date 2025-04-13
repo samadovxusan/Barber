@@ -11,7 +11,7 @@ namespace Barber.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BarberApprovalController(
+public class BarberWorkingController(
     AppDbContext context,
     IHubContext<BookingHub> hubContext,
     IBookingService bookingService) : ControllerBase
