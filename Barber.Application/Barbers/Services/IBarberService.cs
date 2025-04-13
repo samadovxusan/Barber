@@ -17,6 +17,16 @@ public interface IBarberService
 
     ValueTask<Domain.Entities.Barber?> GetByIdAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
+    
+    ValueTask<Dictionary<DateOnly, List<object>>?> GetBarberBusyTimeByTimeAsync(Guid userId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default);
+    
+    ValueTask<Dictionary<DateOnly, List<object>>> GetBarberBusyTimeByDateAsync(
+        Guid barberId,
+        DateOnly date,
+        CancellationToken cancellationToken = default);
+    
+    
     ValueTask<BarberInfo> GetBarberInfoAsync(Guid barberId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
 

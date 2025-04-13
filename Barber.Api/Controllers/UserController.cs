@@ -30,7 +30,7 @@ public class UserController(IMediator mediator , IUserService service ,AppDbCont
     }
 
     [HttpGet("bookings")]
-    public async ValueTask<IActionResult> Get([FromRoute] Guid id,
+    public async ValueTask<IActionResult> Get( Guid id,
         CancellationToken cancellationToken)
     {
         var result = await service.Get(u => u.Id == id)

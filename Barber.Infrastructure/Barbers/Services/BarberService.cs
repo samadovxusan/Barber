@@ -61,6 +61,110 @@ public class BarberService(
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 
+    public async ValueTask<Dictionary<DateOnly, List<object>>?> GetBarberBusyTimeByTimeAsync(Guid userId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await context.Bookings
+            .Where(b => b.BarberId == userId && b.Confirmed == true)
+            .Select(b => new 
+            {
+                b.Date,  // DateOnly
+                b.AppointmentTime, // TimeSpan
+                b.ServiceId // Vergul bilan ajratilgan string
+            })
+            .ToListAsync(cancellationToken);
+
+// Dictionary yaratamiz: Date -> List<{ AppointmentTime, EndTime }>
+        var dictionary = new Dictionary<DateOnly, List<object>>();
+
+        foreach (var booking in result)
+        {
+            // ServiceId stringni vergulga ajratamiz
+            var serviceIdsArray = booking.ServiceId.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            TimeSpan totalDuration = TimeSpan.Zero;
+
+            foreach (var serviceId in serviceIdsArray)
+            {
+                var serviceDuration = context.Services
+                    .Where(s => s.Id.ToString() == serviceId.Trim())
+                    .Select(s => s.Duration)
+                    .FirstOrDefault();  
+
+                totalDuration += serviceDuration; // Barcha durationlarni qo‘shamiz
+            }
+
+            // EndTime hisoblash
+            var endTime = booking.AppointmentTime + totalDuration;
+
+            // Datega asoslanib dictionaryga qo'shamiz
+            if (!dictionary.ContainsKey(booking.Date))
+            {
+                dictionary[booking.Date] = new List<object>();
+            }
+
+            // Har bir booking uchun AppointmentTime va EndTime qo‘shiladi
+            dictionary[booking.Date].Add(new 
+            {
+                AppointmentTime = booking.AppointmentTime.ToString(@"hh\:mm\:ss"),
+                EndTime = endTime.ToString(@"hh\:mm\:ss")
+            });
+        }
+
+        return dictionary;
+    }
+
+    public async ValueTask<Dictionary<DateOnly, List<object>>> GetBarberBusyTimeByDateAsync(Guid barberId, DateOnly date, CancellationToken cancellationToken = default)
+    {
+        var result = await context.Bookings
+            .Where(b => b.BarberId == barberId && b.Confirmed == true && b.Date == date)
+            .Select(b => new
+            {
+                b.Date,
+                b.AppointmentTime,
+                b.ServiceId
+            })
+            .ToListAsync(cancellationToken);
+
+        var dictionary = new Dictionary<DateOnly, List<object>>();
+
+        if (!result.Any())
+        {
+            // Agar booking topilmasa — bo‘sh list bilan qaytariladi
+            dictionary[date] = new List<object>();
+            return dictionary;
+        }
+
+        foreach (var booking in result)
+        {
+            var serviceIdsArray = booking.ServiceId.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            TimeSpan totalDuration = TimeSpan.Zero;
+
+            foreach (var serviceId in serviceIdsArray)
+            {
+                var duration = await context.Services
+                    .Where(s => s.Id.ToString() == serviceId.Trim())
+                    .Select(s => s.Duration)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                totalDuration += duration;
+            }
+
+            var endTime = booking.AppointmentTime + totalDuration;
+
+            if (!dictionary.ContainsKey(booking.Date))
+                dictionary[booking.Date] = new List<object>();
+
+            dictionary[booking.Date].Add(new
+            {
+                AppointmentTime = booking.AppointmentTime.ToString(@"hh\:mm\:ss"),
+                EndTime = endTime.ToString(@"hh\:mm\:ss")
+            });
+        }
+
+        return dictionary;
+    }
+
     public async ValueTask<BarberInfo> GetBarberInfoAsync(Guid barberId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default)
     {
