@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Location\Mappers\" />
       <Folder Include="Servises\Validators\" />
     </ItemGroup>
 

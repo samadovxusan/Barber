@@ -20,6 +20,7 @@ public class CreateBarberCommandHandler(IBarberService barberService,AppDbContex
             Password = result.Password,
             Roles = result.Role,CreatedTime = DateTimeOffset.UtcNow
             
+            
         };
         await context.Users.AddAsync(user, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
