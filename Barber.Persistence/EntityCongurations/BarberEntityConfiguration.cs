@@ -23,5 +23,6 @@ public class BarberEntityConfiguration : IEntityTypeConfiguration<Domain.Entitie
             .HasForeignKey(ds => ds.BarberId)
             .OnDelete(DeleteBehavior.Cascade);
         
+  
     }
 }

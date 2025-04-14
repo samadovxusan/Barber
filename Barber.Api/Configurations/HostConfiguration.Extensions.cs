@@ -9,6 +9,7 @@ using Barber.Application.Booking.Service;
 using Barber.Application.Common.Settings;
 using Barber.Application.Dashboard;
 using Barber.Application.Images.Service;
+using Barber.Application.Location.Service;
 using Barber.Application.Reviews.Services;
 using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
@@ -18,6 +19,7 @@ using Barber.Infrastructure.Barbers.Services;
 using Barber.Infrastructure.Booking.Services;
 using Barber.Infrastructure.Dashboard.Service;
 using Barber.Infrastructure.Images.Service;
+using Barber.Infrastructure.Location.Sevice;
 using Barber.Infrastructure.Reviews.Service;
 using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
@@ -98,7 +100,9 @@ public static partial class HostConfiguration
         builder.Services.AddScoped<IDashboardService, DashboardService>();
         // Images
         builder.Services.AddScoped<IImageService, ImageService>();
-
+        // Location
+        builder.Services.AddScoped<ILocationService, LocationService>();
+        builder.Services.AddScoped<ILocationRepository, LocationRepositories>();
 
         builder.Services.AddScoped<TimeScheduleGenerator>();
         builder.Services.AddHttpClient();

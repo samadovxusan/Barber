@@ -21,10 +21,6 @@ public class BarberCreateValidator : AbstractValidator<BarberCreate>
             .NotEmpty().WithMessage("Phone Number is required.")
             .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Invalid phone number format.");
 
-        RuleFor(user => user.Address)
-            .NotEmpty().WithMessage("Address is required.")
-            .MinimumLength(5).WithMessage("Address must be at least 5 characters.");
-
         RuleFor(user => user.Password)
             .NotEmpty().WithMessage("Password is required.")
             .MinimumLength(8).WithMessage("Password must be at least 8 characters.")

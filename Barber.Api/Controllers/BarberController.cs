@@ -50,7 +50,7 @@ public class BarberController(IMediator mediator, IBarberService service, AppDbC
     
 
     [HttpPost]
-    public async ValueTask<IActionResult> Post([FromBody] CreateBerberCommand? userCreate,
+    public async ValueTask<IActionResult> Post([FromForm] CreateBerberCommand? userCreate,
         CancellationToken cancellationToken)
     {
         if (userCreate == null)

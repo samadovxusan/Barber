@@ -44,7 +44,6 @@ public static class SeedDataExtensions
                 Roles = Role.Barber
             },
         };
-
         await dbContext.Users.AddRangeAsync(clients);
         await dbContext.SaveChangesAsync();
     }
