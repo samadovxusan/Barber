@@ -3,6 +3,7 @@ using Barber.Application.Barbers.Madels;
 using Barber.Application.Images;
 using Barber.Application.Images.Command;
 using Barber.Application.Images.Models;
+using Barber.Application.Images.Queries;
 using Barber.Application.Images.Service;
 using Barber.Domain.Entities;
 using Barber.Persistence.DataContexts;
@@ -20,6 +21,13 @@ public class ImageSaveController( IMediator mediator) : ControllerBase
     public async ValueTask<bool> SaveImageWorking([FromForm] SaveImageCommand command)
     {
         var result = await mediator.Send(command);
+        return result;
+    }
+
+    [HttpGet]
+    public async Task<ICollection<Domain.Entities.Images>> GetWorkingByBarberId(GetImagesByBarberIdQueries request)
+    {
+        var result = await mediator.Send(request);
         return result;
     }
   

@@ -68,11 +68,25 @@ public class LocationService:ILocationService
         return _repository.Create(map, cancellationToken);
     }
 
-    public ValueTask<Domain.Entities.Location> UpdateAsync(LocationDto location, CommandOptions commandOptions = default,
+    public async ValueTask<Domain.Entities.Location> UpdateAsync(LocationDto location, CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default)
     {
-        var map = _mapper.Map<Domain.Entities.Location>(location);
-        return _repository.Update(map, cancellationToken);
+        var barberLocation = await _dbContext.Locations
+            .FirstOrDefaultAsync(b => b.BarberId == location.BarberId, cancellationToken: cancellationToken);
+
+        if (barberLocation == null)
+            return null; 
+
+        barberLocation.District = location.District;
+        barberLocation.Address = location.Address;
+        barberLocation.Latitude = location.Latitude;
+        barberLocation.Longitude = location.Longitude;
+        barberLocation.Region = location.Region;
+        barberLocation.ModifiedTime = DateTimeOffset.UtcNow;
+
+        var result = await _repository.Update(barberLocation, cancellationToken);
+        return result;
     }
+
 
 }
