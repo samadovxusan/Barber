@@ -39,6 +39,9 @@ public class BookingController
     public async ValueTask<IActionResult> Get(Guid barberId)
         => Ok(await _service.GetByIdBarberAsync(barberId));
 
+    [HttpGet($"by-user{{userId:guid}}")]
+    public async ValueTask<IActionResult> GetUser(Guid userId)
+        => Ok(await _service.GetByIdUserAsync(userId));
 
     [HttpGet("{bookingId:guid}")]
     public async ValueTask<IActionResult> GetById([FromRoute] Guid bookingId, CancellationToken cancellationToken)

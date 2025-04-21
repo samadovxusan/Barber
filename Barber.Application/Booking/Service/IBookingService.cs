@@ -19,6 +19,9 @@ public interface IBookingService
 
     ValueTask<List<Domain.Entities.Booking>?> GetByIdBarberAsync(Guid bookingId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default);
+    
+    ValueTask<List<Domain.Entities.Booking>?> GetByIdUserAsync(Guid userId, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default);
     ValueTask<Boolean> CreateAsync(Domain.Entities.Booking booking,
         CommandOptions commandOptions = default,
         CancellationToken cancellationToken = default);
