@@ -30,6 +30,15 @@ public class LocationController : ControllerBase
   {
     return Ok( _service.Get(barberId));
   }
+  [HttpGet("search")]
+  public async Task<IActionResult> Get(string region,string district)
+  {
+    if (string.IsNullOrEmpty(region))
+    {
+      return BadRequest();
+    }
+    return Ok( _service.Get(x => x.District == district && x.Region == region));
+  }
   
   [HttpPut]
   public async Task<IActionResult> Put([FromBody] LocationDto locationDto)
