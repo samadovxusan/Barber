@@ -227,7 +227,7 @@ public static partial class HostConfiguration
     {
         app.UseCors(options =>
         {
-            options.WithOrigins("http://localhost:4200") // Faqat frontend uchun ruxsat berish
+            options.WithOrigins("http://10.0.0.36:8081") // Faqat frontend uchun ruxsat berish
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials(); // Cookie va auth tokenlar bilan ishlash uchun
@@ -235,8 +235,6 @@ public static partial class HostConfiguration
 
         return app;
     }
-
-
     /// <summary>
     /// Add Controller middleWhere
     /// </summary>
@@ -249,7 +247,6 @@ public static partial class HostConfiguration
 
         return app;
     }
-
     /// <summary>
     /// Add Controller middleWhere
     /// </summary>

@@ -76,7 +76,7 @@ public class BookingService(IBookingRepositoriess repositoriess, AppDbContext _c
         var book = await _context.Bookings.FirstOrDefaultAsync(x =>x.Id ==request.BookingId, cancellationToken: cancellationToken);
         if (!request.Conformetion)
         {
-            _context.Bookings.Remove(book);
+            book.Status = Status.Cancelled;
             await _context.SaveChangesAsync(cancellationToken);
             return false;
         }

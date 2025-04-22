@@ -31,14 +31,21 @@ public class LocationController : ControllerBase
     return Ok( _service.Get(barberId));
   }
   [HttpGet("search")]
-  public async Task<IActionResult> Get(string region,string district)
+  public async Task<IActionResult> Get(string? region, string? district)
   {
-    if (string.IsNullOrEmpty(region))
+    // Hech bo'lmaganda biri bo'lishi kerak
+    if (string.IsNullOrEmpty(region) && string.IsNullOrEmpty(district))
     {
-      return BadRequest();
+      return BadRequest("At least one filter (region or district) must be provided.");
     }
-    return Ok( _service.Get(x => x.District == district && x.Region == region));
+    var result =  _service.Get(x =>
+      (string.IsNullOrEmpty(region) || x.Region == region) &&
+      (string.IsNullOrEmpty(district) || x.District == district)
+    );
+
+    return Ok(result);
   }
+
   
   [HttpPut]
   public async Task<IActionResult> Put([FromBody] LocationDto locationDto)
