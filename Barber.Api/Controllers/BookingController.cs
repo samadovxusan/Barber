@@ -38,6 +38,11 @@ public class BookingController
     [HttpGet($"by-barber{{barberId:guid}}")]
     public async ValueTask<IActionResult> Get(Guid barberId)
         => Ok(await _service.GetByIdBarberAsync(barberId));
+    
+    
+    [HttpGet($"by-barber/data")]
+    public async ValueTask<IActionResult> Get(Guid barberId,DateOnly date)
+        => Ok(await _service.GetByIdBarberDateAsync(barberId,date));
 
     [HttpGet($"by-user{{userId:guid}}")]
     public async ValueTask<IActionResult> GetUser(Guid userId)

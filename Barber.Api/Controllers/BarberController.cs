@@ -25,6 +25,20 @@ public class BarberController(IMediator mediator, IBarberService service, AppDbC
         return Ok(result);
     }
 
+    [HttpGet("soarch")]
+    public async Task<IActionResult> Get(string fullname, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(fullname))
+            return BadRequest("Full name is required.");
+        
+        var result = service.Get()
+            .Where(x => x.FullName.ToLower().Contains(fullname.Trim().ToLower()));
+
+        
+        return Ok(result);
+    }
+
+
     [HttpGet("BarberInfo")]
     public async Task<IActionResult> Get(Guid barberId,
         CancellationToken cancellationToken)

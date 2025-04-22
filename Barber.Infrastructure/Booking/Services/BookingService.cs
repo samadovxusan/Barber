@@ -43,6 +43,14 @@ public class BookingService(IBookingRepositoriess repositoriess, AppDbContext _c
         return barberBooking;
     }
 
+    public Task<List<Domain.Entities.Booking>?> GetByIdBarberDateAsync(Guid bookingId, DateOnly date, QueryOptions queryOptions = default,
+        CancellationToken cancellationToken = default)
+    {
+        var result = repositoriess.Get(b => b.BarberId == bookingId && b.Date == date).ToListAsync(cancellationToken: cancellationToken);
+        return result;
+        
+    }
+
     public async ValueTask<List<Domain.Entities.Booking>?> GetByIdUserAsync(Guid userId, QueryOptions queryOptions = default,
         CancellationToken cancellationToken = default)
     {
