@@ -1,4 +1,4 @@
-﻿namespace Feedback.Analyzer.Domain.Common.Caching;
+﻿namespace Barber.Domain.Common.Caching;
 
 /// <summary>
 ///  Represents an abstract base class for cache models, providing a common interface for caching operations.

@@ -1,12 +1,13 @@
 ﻿using System.Linq.Expressions;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
+using Barber.Persistence.Caching.Brokers;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Repositories.Interface;
 
 namespace Barber.Persistence.Repositories;
 
-public class BarberRepositories(AppDbContext appDbContext):EntityRepositoryBase<Domain.Entities.Barber, AppDbContext>(appDbContext),IBarberRepository
+public class BarberRepositories(AppDbContext appDbContext , ICacheBroker cacheBroker):EntityRepositoryBase<Domain.Entities.Barber, AppDbContext>(appDbContext ,cacheBroker),IBarberRepository
 {
     public new IQueryable<Domain.Entities.Barber> Get(Expression<Func<Domain.Entities.Barber, bool>>? predicate = default, QueryOptions queryOptions = default)
         => base.Get(predicate, queryOptions);

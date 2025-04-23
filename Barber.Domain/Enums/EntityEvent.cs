@@ -1,4 +1,4 @@
-﻿namespace Xunarmand.Domain.Enums;
+﻿namespace Barber.Domain.Enums;
 
 /// <summary>
 /// Represents different events related to entities in the application lifecycle.

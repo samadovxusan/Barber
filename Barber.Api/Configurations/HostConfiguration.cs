@@ -15,6 +15,7 @@ public static partial class HostConfiguration
         builder
             .AddMappers()
             .AddValidators()
+            .AddCaching()
             .AddPersistence()
             .AddIdentityInfrastructure()   
             .AddMediator()

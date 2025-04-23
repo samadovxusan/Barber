@@ -1,4 +1,4 @@
-﻿namespace Feedback.Analyzer.Persistence.Caching.Models;
+﻿namespace Barber.Persistence.Caching.Models;
 
 /// <summary>
 /// Represents the options for configuring cache entry behavior.

@@ -4,12 +4,13 @@ using Barber.Application.Booking.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
+using Barber.Persistence.Caching.Brokers;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Repositories.Interface;
 
 namespace Barber.Persistence.Repositories;
 
-public class BookingRepositories(AppDbContext appDbContext , HttpClient _httpClient):EntityRepositoryBase<Booking,AppDbContext>(appDbContext),IBookingRepositoriess
+public class BookingRepositories(AppDbContext appDbContext ,ICacheBroker cacheBroker, HttpClient _httpClient):EntityRepositoryBase<Booking,AppDbContext>(appDbContext , cacheBroker ),IBookingRepositoriess
 {
     public new IQueryable<Booking> Get(Expression<Func<Booking, bool>>? predicate = default, QueryOptions queryOptions = default)
     {

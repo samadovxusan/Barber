@@ -1,8 +1,11 @@
 ﻿using System.Linq.Expressions;
+using Barber.Domain.Common.Caching;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Entities;
 using Barber.Domain.Common.Queries;
-using Barber.Domain.Entities;
+using Barber.Persistence.Caching.Brokers;
+using Barber.Persistence.Caching.Models;
+using Barber.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -12,10 +15,14 @@ namespace Barber.Persistence.Repositories;
 /// Represents a base repository for entities with common CRUD operations.
 /// </summary>
 /// <param name="dbContext"></param>
+/// <param name="cacheBroker"></param>
+/// <param name="cacheEntryOptions"></param>
 /// <typeparam name="TEntity"></typeparam>
 /// <typeparam name="TContext"></typeparam>
 public abstract class EntityRepositoryBase<TEntity, TContext>(
-    TContext dbContext)
+    TContext dbContext,
+    ICacheBroker cacheBroker,
+    CacheEntryOptions? cacheEntryOptions = default)
     where TEntity : class, IEntity where TContext : DbContext
 {
     protected TContext DbContext => dbContext;
@@ -52,7 +59,7 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
         if (predicate is not null)
             initialQuery = initialQuery.Where(predicate);
 
-        return initialQuery;
+        return initialQuery.ApplyTrackingMode(queryOptions.TrackingMode);
     }
     
     /// <summary>
@@ -70,9 +77,19 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
     {
         var foundEntity = default(TEntity?);
 
-        var initialQuery = DbContext.Set<TEntity>().AsQueryable();
+        if (cacheEntryOptions is null || !await cacheBroker.TryGetAsync<TEntity>(id.ToString(), out var cachedEntity, cancellationToken))
+        {
+            var initialQuery = DbContext.Set<TEntity>().AsQueryable();
 
-        foundEntity = await initialQuery.FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
+            initialQuery.ApplyTrackingMode(queryOptions.TrackingMode);
+            
+            foundEntity = await initialQuery.FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
+
+            if (cacheEntryOptions is not null && foundEntity is not null)
+                await cacheBroker.SetAsync(foundEntity.Id.ToString(), foundEntity, cacheEntryOptions, cancellationToken);
+        }
+        else
+            foundEntity = cachedEntity;
 
         return foundEntity;
     }
@@ -86,8 +103,8 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
     protected async ValueTask<bool> CheckByIdAsync(Guid entityId, CancellationToken cancellationToken = default)
     {
         var foundEntity = await DbContext.Set<TEntity>()
-                                         .Select(entity => entity.Id)
-                                         .FirstOrDefaultAsync(foundEntityId => foundEntityId == entityId, cancellationToken);
+            .Select(entity => entity.Id)
+            .FirstOrDefaultAsync(foundEntityId => foundEntityId == entityId, cancellationToken);
 
         return foundEntity != Guid.Empty;
     }
@@ -106,7 +123,9 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
     )
     {
         var initialQuery = DbContext.Set<TEntity>().Where(entity => ids.Contains(entity.Id));
-        
+
+        initialQuery.ApplyTrackingMode(queryOptions.TrackingMode);
+
         return await initialQuery.ToListAsync(cancellationToken: cancellationToken);
     }
 
@@ -125,9 +144,12 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
     {
         await DbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
 
+        if (cacheEntryOptions is not null)
+            await cacheBroker.SetAsync(entity.Id.ToString(), entity, cacheEntryOptions, cancellationToken);
+
         if (!commandOptions.SkipSaveChanges)
             await DbContext.SaveChangesAsync(cancellationToken);
-        
+
         return entity;
     }
 
@@ -145,6 +167,9 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
     )
     {
         DbContext.Set<TEntity>().Update(entity);
+
+        if (cacheEntryOptions is not null)
+            await cacheBroker.SetAsync(entity.Id.ToString(), entity, cacheEntryOptions, cancellationToken);
 
         if (!commandOptions.SkipSaveChanges)
             await DbContext.SaveChangesAsync(cancellationToken);
@@ -167,7 +192,9 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
     {
         DbContext.Set<TEntity>().Remove(entity);
 
- 
+        if (cacheEntryOptions is not null)
+            await cacheBroker.DeleteAsync(entity.Id.ToString(), cancellationToken);
+
         if (!commandOptions.SkipSaveChanges)
             await DbContext.SaveChangesAsync(cancellationToken);
 
@@ -189,12 +216,14 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
     )
     {
         var entity = await DbContext
-                           .Set<TEntity>()
-                           .FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken) 
+                         .Set<TEntity>()
+                         .FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken) 
                      ?? throw new InvalidOperationException();
 
         DbContext.Remove(entity);
 
+        if (cacheEntryOptions is not null)
+            await cacheBroker.DeleteAsync(entity.Id.ToString(), cancellationToken);
 
         if (!commandOptions.SkipSaveChanges)
             await DbContext.SaveChangesAsync(cancellationToken);
@@ -202,6 +231,10 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(
         return entity;
     }
 
+    private string AddTypePrefix(CacheModel model)
+    {
+        return $"{typeof(TEntity).Name}_{model.CacheKey}";
+    }
 
     /// <summary>
     /// Batch updates entities matching given predicate using the provided property selectors and value selectors.

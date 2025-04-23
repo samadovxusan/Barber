@@ -1,6 +1,6 @@
-﻿using Feedback.Analyzer.Persistence.Caching.Models;
+﻿using Barber.Persistence.Caching.Models;
 
-namespace Feedback.Analyzer.Persistence.Caching.Brokers;
+namespace Barber.Persistence.Caching.Brokers;
 
 /// <summary>
 /// Defines cache broker functionality.

@@ -1,4 +1,4 @@
-﻿namespace Feedback.Analyzer.Application.Common.Settings;
+﻿namespace Barber.Application.Common.Settings;
 
 /// <summary>
 /// Represents the configuration settings for caching in a system.

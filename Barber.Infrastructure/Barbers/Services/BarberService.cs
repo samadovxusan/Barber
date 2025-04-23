@@ -6,6 +6,7 @@ using Barber.Application.Users.Models;
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
+using Barber.Domain.Enums;
 using Barber.Infrastructure.Extentions;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Extensions;
@@ -14,7 +15,6 @@ using Barber.Persistence.Repositories.Interface;
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Xunarmand.Domain.Enums;
 
 namespace Barber.Infrastructure.Barbers.Services;
 

@@ -1,12 +1,12 @@
-﻿using Feedback.Analyzer.Application.Common.Settings;
-using Feedback.Analyzer.Persistence.Caching.Brokers;
-using Feedback.Analyzer.Persistence.Caching.Models;
+﻿using Barber.Application.Common.Settings;
+using Barber.Persistence.Caching.Brokers;
+using Barber.Persistence.Caching.Models;
 using Force.DeepCloner;
 using LazyCache;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
-namespace Feedback.Analyzer.Infrastructure.Common.Caching;
+namespace Barber.Infrastructure.Common.Caching;
 
 /// <summary>
 /// Provides caching functionalities using an in-memory cache.

@@ -17,12 +17,14 @@ using Barber.Domain.Entities;
 using Barber.Infrastructure.Auth.Services;
 using Barber.Infrastructure.Barbers.Services;
 using Barber.Infrastructure.Booking.Services;
+using Barber.Infrastructure.Common.Caching;
 using Barber.Infrastructure.Dashboard.Service;
 using Barber.Infrastructure.Images.Service;
 using Barber.Infrastructure.Location.Sevice;
 using Barber.Infrastructure.Reviews.Service;
 using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
+using Barber.Persistence.Caching.Brokers;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Repositories;
 using Barber.Persistence.Repositories.Interface;
@@ -216,6 +218,20 @@ public static partial class HostConfiguration
         builder.Services.AddSignalR();
         return builder;
     }
+    private static WebApplicationBuilder AddCaching(this WebApplicationBuilder builder)
+    {
+        // Configure CacheSettings from the app settings.
+        builder.Services.Configure<CacheSettings>(builder.Configuration.GetSection(nameof(CacheSettings)));
+
+        // Register the Memory Cache service.
+        builder.Services.AddLazyCache();
+        
+        // Register the Memory Cache as a singleton.
+        builder.Services.AddSingleton<ICacheBroker, LazyMemoryCacheBroker>();
+        
+
+        return builder;
+    }
 
 
     /// <summary>
@@ -227,7 +243,7 @@ public static partial class HostConfiguration
     {
         app.UseCors(options =>
         {
-            options.WithOrigins("http://10.0.0.36:8081") // Faqat frontend uchun ruxsat berish
+            options.WithOrigins("http://10.0.0.34:8081") // Faqat frontend uchun ruxsat berish
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials(); // Cookie va auth tokenlar bilan ishlash uchun

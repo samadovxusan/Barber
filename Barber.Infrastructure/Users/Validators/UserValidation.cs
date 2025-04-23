@@ -1,8 +1,8 @@
 ﻿using Barber.Application.Common.Settings;
 using Barber.Domain.Entities;
+using Barber.Domain.Enums;
 using FluentValidation;
 using Microsoft.Extensions.Options;
-using Xunarmand.Domain.Enums;
 
 namespace Barber.Infrastructure.Users.Validators;
 

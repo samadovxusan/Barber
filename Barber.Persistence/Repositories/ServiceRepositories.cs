@@ -2,13 +2,14 @@
 using Barber.Domain.Common.Commands;
 using Barber.Domain.Common.Queries;
 using Barber.Domain.Entities;
+using Barber.Persistence.Caching.Brokers;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Repositories.Interface;
 
 namespace Barber.Persistence.Repositories;
 
-public class ServiceRepositories(AppDbContext appContext)
-    : EntityRepositoryBase<Service, AppDbContext>(appContext), IServiceRepository
+public class ServiceRepositories(AppDbContext appContext ,ICacheBroker cacheBroker)
+    : EntityRepositoryBase<Service, AppDbContext>(appContext, cacheBroker), IServiceRepository
 {
     public IQueryable<Service> Get(Expression<Func<Service, bool>>? predicate = default, QueryOptions queryOptions = default)
     {
