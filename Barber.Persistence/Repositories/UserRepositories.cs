@@ -10,8 +10,8 @@ using Barber.Persistence.Repositories.Interface;
 
 namespace Barber.Persistence.Repositories;
 
-public class UserRepositories(AppDbContext appContext,ICacheBroker cacheBroker, CacheEntryOptions cacheEntryOptions)
-    : EntityRepositoryBase<User, AppDbContext>(appContext,cacheBroker,cacheEntryOptions), IUserRepository
+public class UserRepositories(AppDbContext appContext,ICacheBroker cacheBroker)
+    : EntityRepositoryBase<User, AppDbContext>(appContext,cacheBroker, new CacheEntryOptions()), IUserRepository
 {
     public new IQueryable<User> Get(Expression<Func<User, bool>>? predicate = default, QueryOptions queryOptions = default)
     {

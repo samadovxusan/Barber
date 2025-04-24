@@ -25,6 +25,7 @@ using Barber.Infrastructure.Reviews.Service;
 using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
 using Barber.Persistence.Caching.Brokers;
+using Barber.Persistence.Caching.Models;
 using Barber.Persistence.DataContexts;
 using Barber.Persistence.Repositories;
 using Barber.Persistence.Repositories.Interface;
