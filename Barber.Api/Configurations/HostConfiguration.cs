@@ -34,6 +34,7 @@ public static partial class HostConfiguration
     {
         app.UseCors();
         app.UseMiddleware<GlobalException>();
+        app.UseMiddleware<StatusCodeMiddleware>();
         await app.SeedDataAsync();
         app
             .UseDevTools()

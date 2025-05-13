@@ -71,7 +71,6 @@ public class AuthService(AppDbContext dbContext, IUserService service, IMapper m
         {
             throw new ApplicationException("Invalid refresh token");
         }
-
         refreshTokenAsync.Token = await jwtToken.GenerateRefreshTokenAsync();
         refreshTokenAsync.Expires = DateTime.UtcNow.AddDays(7);
         await dbContext.SaveChangesAsync();

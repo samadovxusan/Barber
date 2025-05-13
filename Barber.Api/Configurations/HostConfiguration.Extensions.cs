@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Text;
 using Barber.Api.Data;
 using Barber.Api.Hubs;
-using Barber.Api.Middleware;
 using Barber.Application.Auth.Services;
 using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;

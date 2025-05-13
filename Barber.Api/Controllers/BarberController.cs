@@ -15,6 +15,7 @@ namespace Barber.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class BarberController(IMediator mediator, IBarberService service, AppDbContext context) : ControllerBase
 {
     [HttpGet]
