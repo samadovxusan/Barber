@@ -21,6 +21,10 @@
     <ItemGroup>
       <Folder Include="Chats\" />
       <Folder Include="Common\" />
+      <Folder Include="Payments\Click\CommandHandler\" />
+      <Folder Include="Payments\Click\Mappers\" />
+      <Folder Include="Payments\Click\QueryHandler\" />
+      <Folder Include="Payments\Click\Service\" />
       <Folder Include="Servises\Validators\" />
     </ItemGroup>
 
