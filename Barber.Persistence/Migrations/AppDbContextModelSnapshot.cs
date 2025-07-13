@@ -17,7 +17,7 @@ namespace Barber.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -251,6 +251,72 @@ namespace Barber.Persistence.Migrations
                     b.ToTable("Locations");
                 });
 
+            modelBuilder.Entity("Barber.Domain.Entities.Payments", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FailureReason")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentProvider")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("SubscriptionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TransactionId"));
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("Barber.Domain.Entities.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -321,6 +387,36 @@ namespace Barber.Persistence.Migrations
                     b.ToTable("Services");
                 });
 
+            modelBuilder.Entity("Barber.Domain.Entities.Subscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal?>("DiscountPercentage")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("DurationInDays")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subscriptions");
+                });
+
             modelBuilder.Entity("Barber.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -352,6 +448,45 @@ namespace Barber.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Barber.Domain.Entities.UserSubscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BarberId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpireAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SubscribedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SubscriptionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BarberId");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.ToTable("UserSubscriptions");
                 });
 
             modelBuilder.Entity("Barber.Application.Auth.Models.RefreshToken", b =>
@@ -417,6 +552,25 @@ namespace Barber.Persistence.Migrations
                     b.Navigation("Barber");
                 });
 
+            modelBuilder.Entity("Barber.Domain.Entities.Payments", b =>
+                {
+                    b.HasOne("Barber.Domain.Entities.Subscription", "Subscription")
+                        .WithMany("Payments")
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Barber.Domain.Entities.Barber", "Barber")
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Barber");
+
+                    b.Navigation("Subscription");
+                });
+
             modelBuilder.Entity("Barber.Domain.Entities.Review", b =>
                 {
                     b.HasOne("Barber.Domain.Entities.Barber", "Barber")
@@ -447,6 +601,25 @@ namespace Barber.Persistence.Migrations
                     b.Navigation("Barber");
                 });
 
+            modelBuilder.Entity("Barber.Domain.Entities.UserSubscription", b =>
+                {
+                    b.HasOne("Barber.Domain.Entities.Barber", "Barber")
+                        .WithMany()
+                        .HasForeignKey("BarberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Barber.Domain.Entities.Subscription", "Subscription")
+                        .WithMany("UserSubscriptions")
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Barber");
+
+                    b.Navigation("Subscription");
+                });
+
             modelBuilder.Entity("Barber.Domain.Entities.Barber", b =>
                 {
                     b.Navigation("BarberWorkingTime");
@@ -456,6 +629,15 @@ namespace Barber.Persistence.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("Location");
+
+                    b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("Barber.Domain.Entities.Subscription", b =>
+                {
+                    b.Navigation("Payments");
+
+                    b.Navigation("UserSubscriptions");
                 });
 
             modelBuilder.Entity("Barber.Domain.Entities.User", b =>

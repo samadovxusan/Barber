@@ -16,15 +16,16 @@ public class AuthController(IAuthService authService, IMapper mapper) : Controll
         var result = await authService.Register(register);
         return Ok(result);
     }
+
     [HttpPost("Admin")]
     public async Task<IActionResult> Register(AdminCreate register)
     {
-
         var newuser = mapper.Map<UserCreate>(register);
-        
+
         var result = await authService.Register(newuser);
         return Ok(result);
     }
+
     [HttpPost]
     public async Task<IActionResult> Login(Login login)
     {

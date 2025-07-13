@@ -11,5 +11,4 @@ public class BarberCreate
     public string PhoneNumber { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public IFormFile ImageUrl { get; set; } = default!;
-
 }
