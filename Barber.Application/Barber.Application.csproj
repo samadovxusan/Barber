@@ -17,10 +17,7 @@
 
     <ItemGroup>
       <Folder Include="Chats\" />
-      <Folder Include="Payments\Click\Command\" />
-      <Folder Include="Payments\Click\Models\" />
-      <Folder Include="Payments\Click\Query\" />
-      <Folder Include="Payments\Click\Service\" />
+      <Folder Include="Payments\Click\" />
     </ItemGroup>
 
 </Project>

@@ -10,5 +10,6 @@ public class BarberInfo
     public string PhoneNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
+    public bool IsPremium { get; set; }
     
 }

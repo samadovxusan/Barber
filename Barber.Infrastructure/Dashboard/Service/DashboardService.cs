@@ -1,4 +1,5 @@
 ﻿using Barber.Application.Dashboard;
+using Barber.Application.Dashboard.Service;
 using Barber.Domain.Enums;
 using Barber.Persistence.DataContexts;
 using Microsoft.EntityFrameworkCore;

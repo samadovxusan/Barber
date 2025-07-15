@@ -11,14 +11,12 @@ public class Barber : AuditableEntity
     public string PhoneNumber { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
-    [JsonIgnore]
-    public Location? Location { get; set; }
-    
-    [JsonIgnore]
-    public Role Role { get; set; } = Role.Barber;
+    public bool IsPremium { get; set; }
+    [JsonIgnore] public Location? Location { get; set; }
+
+    [JsonIgnore] public Role Role { get; set; } = Role.Barber;
     public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
     public ICollection<Images> Images { get; set; } = new List<Images>();
     public ICollection<Payments> Payments { get; set; } = new List<Payments>();
     public ICollection<BarberDailySchedule> BarberWorkingTime { get; set; } = new List<BarberDailySchedule>();
-
 }
