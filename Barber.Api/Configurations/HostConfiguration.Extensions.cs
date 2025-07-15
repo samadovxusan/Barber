@@ -7,8 +7,10 @@ using Barber.Application.Barbers.Services;
 using Barber.Application.Booking.Service;
 using Barber.Application.Common.Settings;
 using Barber.Application.Dashboard;
+using Barber.Application.Dashboard.Service;
 using Barber.Application.Images.Service;
 using Barber.Application.Location.Service;
+using Barber.Application.Payments.Click.Service;
 using Barber.Application.Reviews.Services;
 using Barber.Application.Servises.Sarvices;
 using Barber.Application.Users.Services;
@@ -20,6 +22,7 @@ using Barber.Infrastructure.Common.Caching;
 using Barber.Infrastructure.Dashboard.Service;
 using Barber.Infrastructure.Images.Service;
 using Barber.Infrastructure.Location.Sevice;
+using Barber.Infrastructure.Payments.Click.Service;
 using Barber.Infrastructure.Reviews.Service;
 using Barber.Infrastructure.Servises.Services;
 using Barber.Infrastructure.Users.Services;
@@ -105,6 +108,10 @@ public static partial class HostConfiguration
         // Location
         builder.Services.AddScoped<ILocationService, LocationService>();
         builder.Services.AddScoped<ILocationRepository, LocationRepositories>();
+
+        // payments
+
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
 
         builder.Services.AddScoped<TimeScheduleGenerator>();
         builder.Services.AddHttpClient();
@@ -218,6 +225,7 @@ public static partial class HostConfiguration
         builder.Services.AddSignalR();
         return builder;
     }
+
     private static WebApplicationBuilder AddCaching(this WebApplicationBuilder builder)
     {
         // Configure CacheSettings from the app settings.
@@ -225,10 +233,10 @@ public static partial class HostConfiguration
 
         // Register the Memory Cache service.
         builder.Services.AddLazyCache();
-        
+
         // Register the Memory Cache as a singleton.
         builder.Services.AddSingleton<ICacheBroker, LazyMemoryCacheBroker>();
-        
+
 
         return builder;
     }
@@ -251,6 +259,7 @@ public static partial class HostConfiguration
 
         return app;
     }
+
     /// <summary>
     /// Add Controller middleWhere
     /// </summary>
@@ -263,6 +272,7 @@ public static partial class HostConfiguration
 
         return app;
     }
+
     /// <summary>
     /// Add Controller middleWhere
     /// </summary>

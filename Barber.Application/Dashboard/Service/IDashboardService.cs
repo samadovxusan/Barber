@@ -1,4 +1,4 @@
-﻿namespace Barber.Application.Dashboard;
+﻿namespace Barber.Application.Dashboard.Service;
 
 public interface IDashboardService
 {
